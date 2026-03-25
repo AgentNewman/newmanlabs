@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newman Labs — Built in Louisiana. Deployed everywhere.</title>
+<meta name="description" content="Newman Labs — tools built by Stephen Newman. Self-taught enterprise automation architect out of Albany, Louisiana.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:    #080A0C;
+    --ink:      #0D1117;
+    --surface:  #131920;
+    --rail:     #1C2530;
+    --border:   rgba(255,255,255,0.07);
+    --border-hi:rgba(255,255,255,0.14);
+    --amber:    #F0A500;
+    --amber-dim:#A87200;
+    --amber-glow:rgba(240,165,0,0.12);
+    --white:    #F0EDE8;
+    --muted:    #6B7888;
+    --mono:     'IBM Plex Mono', monospace;
+    --sans:     'IBM Plex Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2.5rem;
+    height: 56px;
+    background: rgba(8,10,12,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-wordmark {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .nav-wordmark span { color: var(--amber); }
+
+  .nav-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #3FB950;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 7rem 2.5rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+
+  .hero-label::before { content: '// '; color: var(--amber-dim); }
+
+  .hero-headline {
+    font-family: var(--mono);
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 600;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.35s forwards;
+  }
+
+  .hero-headline .accent { color: var(--amber); }
+
+  .hero-sub {
+    font-family: var(--sans);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: 300;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.5s forwards;
+  }
+
+  .hero-sub strong { color: var(--white); font-weight: 400; }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.65s forwards;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 24px;
+    background: var(--amber);
+    color: var(--black);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-primary:hover { background: #FFB820; transform: translateY(-1px); }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--border-hi);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-ghost:hover { border-color: var(--amber-dim); color: var(--amber); }
+
+  .stat-bar {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .stat-bar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0 2.5rem;
+  }
+
+  .stat {
+    padding: 1.5rem 2rem;
+    border-right: 1px solid var(--border);
+  }
+
+  .stat:first-child { padding-left: 0; }
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: var(--mono);
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--amber);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .about-strip {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 2.5rem;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 4rem;
+    align-items: start;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .about-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    padding-top: 4px;
+  }
+
+  .about-tag::before { content: '[ '; }
+  .about-tag::after { content: ' ]'; }
+
+  .about-body {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: rgba(240,237,232,0.75);
+    line-height: 1.8;
+  }
+
+  .about-body strong { color: var(--white); font-weight: 400; }
+
+  .tools-section {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 2.5rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+
+  .section-title::before { content: '// '; color: var(--amber-dim); }
+  .section-count { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .tool-card {
+    background: var(--ink);
+    padding: 1.75rem;
+    position: relative;
+    transition: background 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tool-card:hover { background: var(--surface); }
+
+  .tool-card.live::before, .tool-card.soon::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+  }
+
+  .tool-card.live::before { background: var(--amber); }
+  .tool-card.soon::before { background: var(--rail); }
+
+  .tool-status {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .tool-status.live { color: #3FB950; }
+  .tool-status.soon { color: var(--muted); }
+
+  .tool-name {
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .tool-desc {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  .tool-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.25rem; }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    background: var(--rail);
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+  }
+
+  .tool-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--amber);
+    text-decoration: none;
+    transition: gap 0.15s;
+  }
+
+  .tool-link:hover { gap: 10px; }
+  .tool-link.disabled { color: var(--muted); pointer-events: none; }
+  .arrow { font-size: 14px; }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    background: var(--ink);
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+  .footer-copy span { color: var(--amber); }
+  .footer-loc { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    nav { padding: 0 1.25rem; }
+    .hero { padding: 6rem 1.25rem 3rem; }
+    .hero-headline { font-size: 2.4rem; }
+    .stat-bar-inner { grid-template-columns: repeat(2, 1fr); padding: 0 1.25rem; }
+    .stat { border-right: none; }
+    .about-strip { grid-template-columns: 1fr; gap: 1rem; padding: 3rem 1.25rem; }
+    .tools-section { padding: 3rem 1.25rem; }
+    .footer-inner { padding: 1.5rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-wordmark">Newman<span>Labs</span>.dev</a>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    Systems operational
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-label">Albany, Louisiana — Est. 2023</div>
+  <h1 class="hero-headline">
+    Tools built<br>
+    for people<br>
+    who <span class="accent">ship.</span>
+  </h1>
+  <p class="hero-sub">
+    <strong>Newman Labs</strong> is a one-person operation run by Stephen Newman —
+    self-taught enterprise automation architect, builder of things that actually work,
+    based in South Louisiana.
+  </p>
+  <div class="hero-cta">
+    <a href="#tools" class="btn-primary">View the tools <span class="arrow">→</span></a>
+    <a href="https://github.com/AgentNewman" target="_blank" class="btn-ghost">GitHub <span class="arrow">↗</span></a>
+  </div>
+</section>
+
+<div class="stat-bar">
+  <div class="stat-bar-inner">
+    <div class="stat"><div class="stat-num">8+</div><div class="stat-label">Production apps</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Years building</div></div>
+    <div class="stat"><div class="stat-num">0</div><div class="stat-label">CS degrees</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Problems to solve</div></div>
+  </div>
+</div>
+
+<div class="about-strip">
+  <div class="about-tag">About the lab</div>
+  <p class="about-body">
+    Started coding three years ago by volunteering to fix a problem nobody else would touch.
+    Since then: <strong>eight production enterprise apps</strong>,
+    
+    I started coding in 2023 when I volunteered to solve a problem that had no other support available. Since then, I’ve built <strong>eight production enterprise apps</strong>, created integrations for Quickbase, Snowflake, Salesforce, and Power BI, and a growing collection of personal tools built
+    because the right tool didn't exist yet. Newman Labs is where those tools live.
+    <br><br>
+    <strong>Everything here is built to be used — not just admired.</strong>
+  </p>
+</div>
+
+<section class="tools-section" id="tools">
+  <div class="section-header">
+    <div class="section-title">Deployed tools</div>
+    <div class="section-count">1 live &mdash; more incoming</div>
+  </div>
+  <div class="tools-grid">
+
+    <div class="tool-card live">
+      <div class="tool-status live">● Live</div>
+      <div class="tool-name">Crawulator</div>
+      <p class="tool-desc">The only crawfish boil calculator you'll ever need. Guest count, eater type, heat level, full shopping list, cost estimator, and a step-by-step boil timeline built from the <strong>Sharpie Crawfish Recipe</strong>.</p>
+      <div class="tool-tags">
+        <span class="tag">HTML</span>
+        <span class="tag">Vanilla JS</span>
+        <span class="tag">Louisiana</span>
+      </div>
+      <a href="/crawulator" class="tool-link">Launch tool <span class="arrow">→</span></a>
+    </div>
+
+    <div class="tool-card soon">
+      <div class="tool-status soon">○ Coming soon</div>
+      <div class="tool-name">VinTool</div>
+      <p class="tool-desc">VIN decoder with local history. Paste any VIN, get back make, model, year, trim, and engine — with a searchable SQLite log of everything you've looked up.</p>
+      <div class="tool-tags">
+        <span class="tag">FastAPI</span>
+        <span class="tag">SQLite</span>
+        <span class="tag">Python</span>
+      </div>
+      <span class="tool-link disabled">In progress <span class="arrow">—</span></span>
+    </div>
+
+    <div class="tool-card soon">
+      <div class="tool-status soon">○ Coming soon</div>
+      <div class="tool-name">DeepDrive</div>
+      <p class="tool-desc">Storage visualizer targeting iCloud Drive and local filesystems. Find what's eating your disk without digging through Finder for an hour.</p>
+      <div class="tool-tags">
+        <span class="tag">Electron</span>
+        <span class="tag">Node.js</span>
+        <span class="tag">v0.1.3</span>
+      </div>
+      <span class="tool-link disabled">In progress <span class="arrow">—</span></span>
+    </div>
+
+    <div class="tool-card soon">
+      <div class="tool-status soon">○ Coming soon</div>
+      <div class="tool-name">Library</div>
+      <p class="tool-desc">A Goodreads reading dashboard. Built for Kellie. Tracks books read, favorite authors, and reading streaks — fed by a live CSV pipeline from Goodreads exports.</p>
+      <div class="tool-tags">
+        <span class="tag">Dashboard</span>
+        <span class="tag">CSV pipeline</span>
+        <span class="tag">Goodreads</span>
+      </div>
+      <span class="tool-link disabled">In progress <span class="arrow">—</span></span>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">&copy; 2026 <span>Newman Labs</span> — newmanlabs.dev</div>
+    <div class="footer-loc">Albany, Louisiana</div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  const cards = document.querySelectorAll('.tool-card');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }, i * 80);
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  cards.forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease, background 0.2s';
+    obs.observe(card);
+  });
+</script>
+
+</body>
+</html>
