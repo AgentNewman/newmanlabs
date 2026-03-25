@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crawulator — Crawfish Boil Calculator | Newman Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --craw-red: #993C1D;
+    --craw-red-light: #FAECE7;
+    --craw-amber: #BA7517;
+    --craw-amber-light: #FAEEDA;
+    --craw-amber-dark: #854F0B;
+    --bg: #FDFAF7;
+    --surface: #F4EFE8;
+    --card: #FFFFFF;
+    --ink: #1A1209;
+    --ink-mid: #5A4A35;
+    --ink-muted: #9A8A75;
+    --border: rgba(90,74,53,0.15);
+    --border-mid: rgba(90,74,53,0.28);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1A1209;
+      --surface: #251C10;
+      --card: #2E2210;
+      --ink: #F4EFE8;
+      --ink-mid: #C8B89A;
+      --ink-muted: #7A6A55;
+      --border: rgba(200,184,154,0.12);
+      --border-mid: rgba(200,184,154,0.22);
+      --craw-red-light: #3A1508;
+      --craw-amber-light: #2E1E04;
+    }
+  }
+
+  body { background: var(--bg); color: var(--ink); font-family: 'Source Serif 4', Georgia, serif; min-height: 100vh; }
+
+  .back-bar {
+    background: #080A0C;
+    padding: 10px 1.5rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .back-link {
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: #F0A500;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .back-link:hover { color: #FFB820; }
+
+  #app { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .masthead {
+    text-align: center;
+    border-top: 3px solid var(--craw-red);
+    border-bottom: 1px solid var(--border-mid);
+    padding: 1rem 0 0.85rem;
+    margin-bottom: 2rem;
+  }
+  .masthead-eyebrow { font-size: 11px; letter-spacing: .18em; color: var(--ink-muted); text-transform: uppercase; margin-bottom: .4rem; }
+  .masthead h1 { font-family: 'Playfair Display', Georgia, serif; font-weight: 900; font-size: clamp(2rem, 6vw, 2.6rem); line-height: 1.05; color: var(--ink); }
+  .masthead h1 em { color: var(--craw-red); font-style: normal; }
+  .masthead-sub { font-size: 13px; color: var(--ink-muted); font-style: italic; margin-top: .4rem; }
+
+  .section-label { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--craw-red); margin-bottom: .6rem; padding-bottom: 4px; border-bottom: .5px solid var(--border); }
+
+  .tab-bar { display: flex; border: .5px solid var(--border-mid); border-radius: 8px; overflow: hidden; margin-bottom: 1.75rem; }
+  .tab-btn { flex: 1; padding: 10px 12px; background: var(--card); border: none; border-right: .5px solid var(--border-mid); font-family: 'Source Serif 4', serif; font-size: 13px; color: var(--ink-muted); cursor: pointer; transition: all .15s; }
+  .tab-btn:last-child { border-right: none; }
+  .tab-btn:hover { background: var(--surface); color: var(--ink-mid); }
+  .tab-btn.active { background: var(--craw-red-light); color: var(--craw-red); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .guest-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.75rem; align-items: start; }
+  @media (max-width: 480px) { .guest-panel { grid-template-columns: 1fr; } }
+
+  .input-group { display: flex; flex-direction: column; gap: 6px; }
+  .input-label { font-size: 14px; color: var(--ink-muted); font-style: italic; }
+  .slider-row { display: flex; align-items: center; gap: 10px; }
+
+  input[type=range] { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; background: var(--border-mid); border-radius: 2px; outline: none; cursor: pointer; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--craw-red); cursor: pointer; }
+  input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--craw-red); border: none; cursor: pointer; }
+
+  .slider-val { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.5rem; color: var(--craw-red); min-width: 2.2rem; text-align: right; line-height: 1; }
+
+  .eater-type-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .eater-btn { padding: 8px 6px; border: .5px solid var(--border); background: var(--card); border-radius: 8px; font-family: 'Source Serif 4', serif; font-size: 14px; color: var(--ink-muted); cursor: pointer; transition: all .15s; text-align: center; line-height: 1.4; }
+  .eater-btn:hover { background: var(--surface); }
+  .eater-btn.active { border-color: var(--craw-red); color: var(--craw-red); background: var(--craw-red-light); border-width: 1px; }
+
+  .extras-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 1.75rem; }
+  .extra-toggle { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: .5px solid var(--border); background: var(--card); border-radius: 8px; cursor: pointer; font-size: 14px; color: var(--ink-muted); transition: all .15s; user-select: none; }
+  .extra-toggle:hover { background: var(--surface); }
+  .extra-toggle.active { border-color: var(--craw-amber); color: var(--craw-amber); background: var(--craw-amber-light); border-width: 1px; }
+  .toggle-dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid currentColor; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; }
+  .extra-toggle.active .toggle-dot { background: var(--craw-amber); border-color: var(--craw-amber); }
+  .extra-toggle.active .toggle-dot::after { content: ''; position: absolute; top: 2px; left: 2px; width: auto; height: 6px; border-radius: 50%; background: white; }
+
+  .heat-row { display: flex; align-items: center; gap: 10px; margin-bottom: 1.75rem; }
+  .heat-dot { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--craw-red); cursor: pointer; transition: background .1s; }
+  .heat-dot.lit { background: var(--craw-red); }
+  .heat-label { font-family: 'Playfair Display', serif; font-style: italic; font-size: 14px; color: var(--craw-red); }
+
+  hr.divider { border: none; border-top: .5px solid var(--border); margin: 1.5rem 0; }
+
+  .results-headline { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--ink-muted); font-style: italic; text-align: center; margin-bottom: 1.25rem; }
+
+  .big-number-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+  .big-card { background: var(--surface); border-radius: 12px; padding: 1rem .75rem; text-align: center; }
+  .big-card-label { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 4px; }
+  .big-card-num { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 2rem; color: var(--craw-red); line-height: 1; }
+  .big-card-unit { font-size: 12px; color: var(--ink-muted); margin-top: 2px; font-style: italic; }
+
+  .grocery-list { border: .5px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+  .grocery-list-header { padding: 10px 14px; background: var(--surface); font-size: 12px;font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-muted); border-bottom: .5px solid var(--border); }
+  .grocery-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; border-bottom: .5px solid var(--border); font-size: 16px; color: var(--ink); }
+  .grocery-row:last-child {border-bottom: none; }
+  .grocery-row .qty { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--craw-red); font-size: 16px; }
+  .grocery-row .note { font-size: 11px; color: var(--ink-muted); font-style: italic; display: block; }
+
+  .tip-strip { background: var(--craw-red-light); border-left: 3px solid var(--craw-red); padding: 5px 7px; font-size: 14px; color: var(--craw-red); font-style: italic; margin-top: 1.25rem; line-height: 1.55; }
+
+  .price-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; table-layout: fixed; }
+  .price-table th { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); font-weight: 400; padding: 6px 8px; text-align: left; border-bottom: .5px solid var(--border-mid); }
+  .price-table td { padding: 8px 8px; border-bottom: .5px solid var(--border); font-size: 14px; color: var(--ink); vertical-align: middle; }
+  .price-table tr:last-child td { border-bottom: none; }
+  .price-table input[type=number] { background: var(--surface); border: .5px solid var(--border-mid); border-radius: 6px; color: var(--ink); font-family: 'Source Serif 4', serif; font-size: 14px; padding: 4px 6px; height: 30px; outline: none; transition: border .15s; }
+  .price-table input[type=number]:focus { border-color: var(--craw-red); }
+  .price-table input.price-input { width: 70px; }
+  .price-table input.qty-input { width: 52px; }
+
+  .cost-summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+  .cost-card { background: var(--surface); border-radius: 12px; padding: .85rem .75rem; text-align: center; }
+  .cost-card-label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 4px; }
+  .cost-card-num { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.6rem; color: var(--craw-red); line-height: 1; }
+  .cost-card-sub { font-size: 11px; color: var(--ink-muted); margin-top: 2px; font-style: italic; }
+
+  .timeline { display: flex; flex-direction: column; }
+  .tl-row { display: flex; align-items: stretch; }
+  .tl-time { width: 74px; flex-shrink: 0; text-align: right; padding-right: 14px; padding-top: 12px; font-family: 'Playfair Display', serif; font-size: 12px; color: var(--craw-red); font-weight: 700; line-height: 1.3; }
+  .tl-spine { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 20px; }
+  .tl-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--craw-red); flex-shrink: 0; margin-top: 14px; }
+  .tl-line { flex: 1; width: 1.5px; background: var(--border-mid); }
+  .tl-last .tl-line { background: transparent; }
+  .tl-content { flex: 1; padding: 10px 0 22px 14px; }
+  .tl-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .tl-desc { font-size: 13px; color: var(--ink-mid); line-height: 1.6; }
+  .tl-badge { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 8px; background: var(--craw-amber-light); color: var(--craw-amber-dark); margin-top: 7px; }
+
+  footer { margin-top: 3rem; text-align: center; font-size: 12px; color: var(--ink-muted); font-style: italic; border-top: .5px solid var(--border); padding-top: 1.25rem; }
+</style>
+</head>
+<body>
+
+<div class="back-bar">
+  <a href="/" class="back-link">← Newman Labs</a>
+</div>
+
+<div id="app">
+  <div class="masthead">
+    <div class="masthead-eyebrow">Louisiana Tradition</div>
+    <h1>Crawfish <em>Boil</em> Calculator</h1>
+    <div class="masthead-sub">Feed your people. Don't run short. Don't go broke.</div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="calc">Calculator</button>
+    <button class="tab-btn" data-tab="cost">Cost Estimator</button>
+    <button class="tab-btn" data-tab="cook">Boil Timeline</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-calc">
+    <div class="section-label">Your crowd</div>
+    <div class="guest-panel">
+      <div class="input-group">
+        <div class="input-label">Number of guests</div>
+        <div class="slider-row">
+          <input type="range" id="guests" min="2" max="60" value="10" step="1">
+          <div class="slider-val" id="guests-out">10</div>
+        </div>
+      </div>
+      <div class="input-group">
+        <div class="input-label">How do they eat?</div>
+        <div class="eater-type-grid">
+          <button class="eater-btn" data-type="light">Light<br><span style="font-size:11px">Nibblers</span></button>
+          <button class="eater-btn active" data-type="normal">Normal<br><span style="font-size:11px">Eaters</span></button>
+          <button class="eater-btn" data-type="heavy">Heavy<br><span style="font-size:11px">Heads</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">What's in the pot?</div>
+    <div class="extras-grid">
+      <label class="extra-toggle active" id="toggle-corn"><span class="toggle-dot"></span> Corn</label>
+      <label class="extra-toggle active" id="toggle-potato"><span class="toggle-dot"></span> Potatoes</label>
+      <label class="extra-toggle active" id="toggle-sausage"><span class="toggle-dot"></span> Andouille Sausage</label>
+      <label class="extra-toggle" id="toggle-mushroom"><span class="toggle-dot"></span> Mushrooms</label>
+      <label class="extra-toggle" id="toggle-onion"><span class="toggle-dot"></span> Onions</label>
+      <label class="extra-toggle" id="toggle-garlic"><span class="toggle-dot"></span> Whole garlic</label>
+    </div>
+
+    <div class="section-label">Heat level</div>
+    <div class="heat-row">
+      <span style="font-size:13px;color:var(--ink-muted);font-style:italic;">Spice:</span>
+      <div style="display:flex;gap:5px;" id="heat-dots">
+        <div class="heat-dot lit" data-heat="1"></div>
+        <div class="heat-dot lit" data-heat="2"></div>
+        <div class="heat-dot" data-heat="3"></div>
+        <div class="heat-dot" data-heat="4"></div>
+        <div class="heat-dot" data-heat="5"></div>
+      </div>
+      <span class="heat-label" id="heat-label">Medium</span>
+    </div>
+
+    <hr class="divider">
+    <div class="section-label">Shopping list</div>
+    <div class="results-headline" id="results-headline">For 10 normal eaters</div>
+
+    <div class="big-number-row">
+      <div class="big-card"><div class="big-card-label">Crawfish</div><div class="big-card-num" id="lbs-num">30</div><div class="big-card-unit">pounds</div></div>
+      <div class="big-card"><div class="big-card-label">Water</div><div class="big-card-num" id="water-num">30</div><div class="big-card-unit">quarts</div></div>
+      <div class="big-card"><div class="big-card-label">Dry Seasoning</div><div class="big-card-num" id="season-num">3</div><div class="big-card-unit" id="season-unit">lbs Zatarain's</div></div>
+      <div class="big-card"><div class="big-card-label">Liquid Seasoning</div><div class="big-card-num" id="season-num">3</div><div class="big-card-unit" id="season-unit">lbs Zatarain's</div></div>
+    </div>
+
+    <div class="grocery-list" id="grocery-list"></div>
+    <div class="tip-strip" id="tip-strip"></div>
+  </div>
+
+  <div class="tab-panel" id="tab-cost">
+    <div class="section-label">Enter your local prices</div>
+    <div style="overflow-x:auto;">
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th style="width:42%">Item</th>
+            <th style="width:18%">Price ($)</th>
+            <th style="width:16%">Qty</th>
+            <th style="width:24%;text-align:right">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody id="price-tbody"></tbody>
+      </table>
+    </div>
+    <div class="cost-summary">
+      <div class="cost-card"><div class="cost-card-label">Total cost</div><div class="cost-card-num" id="total-cost">$0</div><div class="cost-card-sub">all items</div></div>
+      <div class="cost-card"><div class="cost-card-label">Per person</div><div class="cost-card-num" id="per-person">$0</div><div class="cost-card-sub" id="per-person-sub">10 guests</div></div>
+      <div class="cost-card"><div class="cost-card-label">Per pound</div><div class="cost-card-num" id="per-lb">$0</div><div class="cost-card-sub">of crawfish</div></div>
+    </div>
+    <div class="tip-strip">Tip: prices update live as you type. Change quantities if your bag sizes differ. Cost per person over $20 at a dedicated boil is completely normal — you're feeding folks right.</div>
+  </div>
+
+  <div class="tab-panel" id="tab-cook">
+    <div class="section-label">Your boil — step by step</div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+
+  <footer>Made with love for the mud bugs &mdash; <a href="/" style="color:var(--craw-red);text-decoration:none;">Newman Labs</a></footer>
+</div>
+
+<script>
+const HEAT_LABELS=['Mild','Medium','Hot','Oh Lord','Cajun Tax'];
+const HEAT_MULT=[0.8,1.0,1.3,1.6,2.0];
+const LBS_PER={light:2.5,normal:3,heavy:4};
+let guests=10,eaterType='normal',heat=2;
+let extras={corn:true,potato:true,sausage:true,mushroom:false,onion:false,garlic:false};
+
+const PRICE_ITEMS=[
+  {id:'crawfish',  label:'Sack of crawfish (30 lb)',       defPrice:45, qtyFn:(lb)=>Math.ceil(lb/30)},
+  {id:'lemons',    label:'Sack of lemons',                  defPrice:6,  qtyFn:()=>1},
+  {id:'boil45',    label:'4.5 lb bag crawfish boil',        defPrice:8,  qtyFn:(lb)=>Math.ceil(lb*0.1/4.5)},
+  {id:'boil1',     label:'1 lb bag crawfish boil',          defPrice:3,  qtyFn:(lb,h)=>h>=3?1:0},
+  {id:'liquid',    label:'Bottle of liquid crawfish boil',  defPrice:5,  qtyFn:()=>1},
+  {id:'potatoes',  label:'Sack of potatoes',                defPrice:7,  qtyFn:(lb)=>extras.potato?Math.ceil(lb*0.4/10):0},
+  {id:'mushrooms', label:'2 small boxes mushrooms',         defPrice:4,  qtyFn:(lb,h,g)=>extras.mushroom?Math.ceil(g/8):0},
+  {id:'corn',      label:'Bag of frozen corn (cobs)',        defPrice:5,  qtyFn:(lb,h,g)=>extras.corn?Math.ceil(g*0.75/12):0},
+  {id:'sausage',   label:'2 packs andouille sausage',       defPrice:8,  qtyFn:(lb,h,g)=>extras.sausage?Math.ceil(g*0.15):0},
+  {id:'garlic',    label:'Pack of garlic',                  defPrice:3,  qtyFn:()=>extras.garlic?1:0},
+];
+
+let prices={}, qtyOverride={};
+PRICE_ITEMS.forEach(i=>{prices[i.id]=i.defPrice;});
+
+function getLbs(){return guests*LBS_PER[eaterType];}
+function fmt(n){return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function getQty(item){
+  if(qtyOverride[item.id]!==undefined) return qtyOverride[item.id];
+  return item.qtyFn(getLbs(),heat,guests);
+}
+
+function calcMain(){
+  const lb=getLbs();
+  const season=lb*0.1*HEAT_MULT[heat-1];
+  document.getElementById('lbs-num').textContent=Math.round(lb);
+  document.getElementById('water-num').textContent=Math.round(lb);
+  document.getElementById('season-num').textContent=season<1.5?season.toFixed(1):Math.round(season);
+  document.getElementById('season-unit').textContent=heat>=3?"lbs seasoning (+ cayenne)":"lbs Zatarain's";
+  document.getElementById('results-headline').textContent='For '+guests+' '+eaterType+' eater'+(guests===1?'':'s');
+  const rows=[];
+  rows.push({name:'Live crawfish',qty:Math.round(lb)+' lbs',note:'~35–40 per lb'});
+  rows.push({name:heat>=3?'Crawfish boil seasoning (hot blend)':"Zatarain's crawfish boil",qty:(season<1.5?season.toFixed(1):Math.round(season))+' lbs',note:''});
+  rows.push({name:'Liquid crawfish boil',qty:'1 bottle',note:'add before the boil'});
+  rows.push({name:'Lemons',qty:Math.round(guests*0.6),note:'squeezed in, toss the halves'});
+  if(extras.potato) rows.push({name:'Red potatoes',qty:Math.round(lb*0.4)+' lbs',note:'B-size or halved'});
+  if(extras.corn)   rows.push({name:'Frozen corn (cobs)',qty:Math.ceil(guests*0.75/12)+' bag',note:'goes in at the end off-heat'});
+  if(extras.sausage)rows.push({name:'Andouille sausage',qty:Math.ceil(guests*0.15)+' packs',note:'sliced 1" thick'});
+  if(extras.mushroom)rows.push({name:'Mushrooms',qty:'2 boxes',note:'whole, goes in at the end'});
+  if(extras.garlic) rows.push({name:'Garlic',qty:'1 pack',note:'whole heads, tops cut off'});
+  rows.push({name:'Butter',qty:Math.round(guests*0.1*2)/2+' sticks',note:'melted for dipping'});
+  rows.push({name:'Newspaper / butcher paper',qty:'plenty',note:'cover the whole table'});
+  document.getElementById('grocery-list').innerHTML=
+    '<div class="grocery-list-header">Item — your shopping list</div>'+
+    rows.map(r=>`<div class="grocery-row"><span>${r.name}${r.note?`<span class="note">${r.note}</span>`:''}</span><span class="qty">${r.qty}</span></div>`).join('');
+  const tips=[
+    'Purge the crawfish first — soak in salted water 15 min, drain, repeat. Mud floats out, dead ones float up.',
+    'The soak is everything. Kill the fire after 20 min, then let them sit another 20. That\'s when the seasoning gets in.',
+    heat>=4?'At this heat: warn your guests. Have bread on the table — not optional.':heat>=3?'Add cayenne in stages — taste the water before dumping it all in.':'Medium heat keeps most guests happy. Hot sauce on the side for the brave.',
+    'Budget 2 lbs of ice per person for drinks. People eat a long time at a crawfish boil.',
+  ];
+  document.getElementById('tip-strip').textContent=tips[Math.floor(Math.random()*tips.length)];
+}
+
+function buildPriceTable(){
+  const tbody=document.getElementById('price-tbody');
+  tbody.innerHTML='';
+  PRICE_ITEMS.forEach(item=>{
+    const qty=getQty(item);
+    const sub=qty*(prices[item.id]||0);
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${item.label}</td>
+      <td><input type="number" class="price-input" min="0" step="0.25" value="${(prices[item.id]||0).toFixed(2)}" data-id="${item.id}"></td>
+      <td><input type="number" class="qty-input" min="0" step="1" value="${qty}" data-id="${item.id}"></td>
+      <td style="text-align:right;font-family:'Playfair Display',serif;font-weight:700;color:var(--craw-red);" class="sub-cell">$${fmt(sub)}</td>`;
+    tbody.appendChild(tr);
+  });
+  tbody.querySelectorAll('.price-input').forEach(inp=>{
+    inp.addEventListener('input',e=>{prices[e.target.dataset.id]=parseFloat(e.target.value)||0;updateCostTotals();});
+  });
+  tbody.querySelectorAll('.qty-input').forEach(inp=>{
+    inp.addEventListener('input',e=>{qtyOverride[e.target.dataset.id]=parseInt(e.target.value)||0;updateCostTotals();});
+  });
+  updateCostTotals();
+}
+
+function updateCostTotals(){
+  let total=0;
+  const rows=document.querySelectorAll('#price-tbody tr');
+  PRICE_ITEMS.forEach((item,i)=>{
+    const qty=parseInt(rows[i].querySelector('.qty-input').value)||0;
+    const pr=parseFloat(rows[i].querySelector('.price-input').value)||0;
+    const sub=qty*pr; total+=sub;
+    rows[i].querySelector('.sub-cell').textContent='$'+fmt(sub);
+  });
+  const lb=getLbs();
+  document.getElementById('total-cost').textContent='$'+fmt(total);
+  document.getElementById('per-person').textContent='$'+fmt(guests>0?total/guests:0);
+  document.getElementById('per-person-sub').textContent=guests+' guests';
+  document.getElementById('per-lb').textContent='$'+fmt(lb>0?total/lb:0);
+}
+
+function buildTimeline(){
+  const steps=[
+    {time:'Start',      title:'Fill the pot & prep lemons',     desc:'Fill with enough water for your batch — roughly 1 quart per pound of crawfish. Squeeze every lemon into the water and toss the halved shells right in the basket.',badge:''},
+    {time:'Near boil',  title:'Add seasoning',                  desc:'Right before the water hits a boil, add your dry crawfish boil and liquid boil. Stir it in. When you hit a full rolling boil, drop in the potatoes.',badge:'Potatoes in'},
+    {time:'+ 10 min',   title:'Crawfish go in',                 desc:'After the potatoes have had 10 minutes, drop in the live crawfish. Keep the boil rolling — not a violent hard boil, just a steady one.',badge:'Crawfish in'},
+    {time:'+ 20 min',   title:'Kill the fire',                  desc:"Turn off the heat completely. Now drop in everything that finishes off-heat: corn, sausage, mushrooms, and garlic. These don't need to cook — they soak.",badge:'Corn · Sausage · Mushrooms · Garlic'},
+    {time:'+ 20 min',   title:'The soak — do not skip this',    desc:"Let everything sit off-heat for 20 full minutes with the lid on. This is when the crawfish absorb the seasoning. Rushing the soak is the #1 mistake at a boil.",badge:'Lid on. Walk away.'},
+    {time:'Done',       title:'Drain & dump on the table',      desc:'Drain the pot and dump everything straight onto a newspaper-covered table. Serve with melted butter, hot sauce, and cold drinks. No plates required.',badge:''},
+  ];
+  document.getElementById('timeline').innerHTML=steps.map((s,i)=>`
+    <div class="tl-row${i===steps.length-1?' tl-last':''}">
+      <div class="tl-time">${s.time}</div>
+      <div class="tl-spine"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">${s.title}</div>
+        <div class="tl-desc">${s.desc}</div>
+        ${s.badge?`<span class="tl-badge">${s.badge}</span>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function refreshAll(){
+  qtyOverride={};
+  calcMain();
+  buildPriceTable();
+  buildTimeline();
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+document.getElementById('guests').addEventListener('input',e=>{
+  guests=+e.target.value;
+  document.getElementById('guests-out').textContent=guests;
+  refreshAll();
+});
+
+document.querySelectorAll('.eater-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.eater-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    eaterType=b.dataset.type;
+    refreshAll();
+  });
+});
+
+Object.keys(extras).forEach(key=>{
+  document.getElementById('toggle-'+key).addEventListener('click',()=>{
+    extras[key]=!extras[key];
+    document.getElementById('toggle-'+key).classList.toggle('active',extras[key]);
+    refreshAll();
+  });
+});
+
+document.querySelectorAll('.heat-dot').forEach(d=>{
+  d.addEventListener('click',()=>{
+    heat=+d.dataset.heat;
+    document.querySelectorAll('.heat-dot').forEach(x=>x.classList.toggle('lit',+x.dataset.heat<=heat));
+    document.getElementById('heat-label').textContent=HEAT_LABELS[heat-1];
+    refreshAll();
+  });
+});
+
+refreshAll();
+</script>
+</body>
+</html>
