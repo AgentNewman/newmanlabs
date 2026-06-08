@@ -497,7 +497,7 @@
 <section class="tools-section" id="tools">
   <div class="section-header">
     <div class="section-title">Deployed tools</div>
-    <div class="section-count">2 live &mdash; more incoming</div>
+    <div class="section-count">3 live — more incoming</div>
   </div>
   <div class="tools-grid">
 
@@ -513,34 +513,46 @@
       <a href="/crawulator" class="tool-link">Launch tool <span class="arrow">→</span></a>
     </div>
 
-    <div class="tool-card soon">
-      <div class="tool-status soon">○ Coming soon</div>
+    <div class="tool-card live">
+      <div class="tool-status live">● Live</div>
       <div class="tool-name">VinTool</div>
-      <p class="tool-desc">VIN decoder with local history. Paste any VIN, get back make, model, year, trim, and engine — with a searchable SQLite log of everything you've looked up.</p>
+      <p class="tool-desc">Decode any VIN instantly — free, no account, no ads. Full specs, EPA fuel economy, NCAP safety star ratings, open recalls, and real owner complaint narratives. Five official government data sources, one clean interface.</p>
       <div class="tool-tags">
-        <span class="tag">FastAPI</span>
-        <span class="tag">SQLite</span>
-        <span class="tag">Python</span>
+        <span class="tag">HTML</span>
+        <span class="tag">Vanilla JS</span>
+        <span class="tag">NHTSA API</span>
+        <span class="tag">EPA API</span>
       </div>
-      <span class="tool-link disabled">In progress <span class="arrow">—</span></span>
-    </div>
-
-    <div class="tool-card soon">
-      <div class="tool-status soon">○ Coming soon</div>
-      <div class="tool-name">DeepDrive</div>
-      <p class="tool-desc">Storage visualizer targeting iCloud Drive and local filesystems. Find what's eating your disk without digging through Finder for an hour.</p>
-      <div class="tool-tags">
-        <span class="tag">Electron</span>
-        <span class="tag">Node.js</span>
-        <span class="tag">v0.1.3</span>
-      </div>
-      <span class="tool-link disabled">In progress <span class="arrow">—</span></span>
+      <a href="/vintool" class="tool-link">Launch tool <span class="arrow">→</span></a>
     </div>
 
     <div class="tool-card live">
       <div class="tool-status live">● Live</div>
+      <div class="tool-name">DeepDrive</div>
+      <p class="tool-desc">Stop guessing what's eating your disk. DeepDrive visualizes your local filesystem and iCloud Drive so you can find the bloat, reclaim the space, and move on. Desktop app — download and run, no setup required.</p>
+      <div class="tool-tags">
+        <span class="tag">Electron</span>
+        <span class="tag">Node.js</span>
+        <span class="tag">v0.1.3</span>
+        <span class="tag">Desktop</span>
+      </div>
+      <a href="https://github.com/AgentNewman/DeepDrive/releases" target="_blank" class="tool-link">Download v0.1.3 <span class="arrow">↗</span></a>
+    </div>
+
+  </div>
+</section>
+
+<section class="tools-section" id="personal" style="padding-top:0">
+  <div class="section-header">
+    <div class="section-title">Personal projects</div>
+    <div class="section-count">built for people I love</div>
+  </div>
+  <div class="tools-grid" style="grid-template-columns: minmax(300px, 480px)">
+
+    <div class="tool-card live">
+      <div class="tool-status live">● Live</div>
       <div class="tool-name">Library of Kellie Newman</div>
-      <p class="tool-desc">A Goodreads reading dashboard. Built for Kellie. Tracks books read, favorite authors, and reading streaks — fed by a live CSV pipeline from Goodreads exports.</p>
+      <p class="tool-desc">A Goodreads reading dashboard built for Kellie. Tracks books read, favorite authors, and reading streaks — fed by a live CSV pipeline from Goodreads exports.</p>
       <div class="tool-tags">
         <span class="tag">Dashboard</span>
         <span class="tag">CSV pipeline</span>
