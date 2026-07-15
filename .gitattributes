@@ -1,0 +1,7 @@
+# Normalize line endings — repo stores LF, avoids phantom whole-file diffs on Windows
+* text=auto
+*.html text eol=lf
+*.js text eol=lf
+*.md text eol=lf
+*.svg text eol=lf
+CNAME text eol=lf

@@ -1,6 +1,6 @@
 # Newman Labs Infrastructure — SKILL.md
 
-**Last updated:** 2026-03-24 (end of session)
+**Last updated:** 2026-07-14 (full-repo audit + fixes session)
 **Status:** LIVE at https://newmanlabs.dev ✅
 
 ---
@@ -60,17 +60,27 @@ and the Source Control panel will only show NewmanLabs files.
 ## Site structure (live)
 
 ```
-newmanlabs.dev/               ← Newman Labs landing page ✅
-newmanlabs.dev/crawulator/    ← Crawfish Boil Calculator ✅
+newmanlabs.dev/                  ← Newman Labs landing page ✅
+newmanlabs.dev/crawulator/       ← Crawfish Boil Calculator ✅
+newmanlabs.dev/vintool           ← VinTool 2.0 (VIN decoder) ✅
+newmanlabs.dev/Newman_Library/   ← Library of Kellie Newman (reading dashboard) ✅
 ```
 
 ### Repo file structure
 ```
 NewmanLabs/
   index.html          ← Landing page (dark industrial, IBM Plex Mono, amber)
-  favicon.svg         ← NL monogram, black + amber border
+  favicon.svg         ← NL monogram, black + amber border (referenced by all pages)
+  vintool.html        ← VinTool 2.0 (client-only; NHTSA vPIC/ODI + EPA APIs)
+  CNAME               ← newmanlabs.dev
+  .gitattributes      ← LF normalization (prevents CRLF phantom diffs)
+  js/
+    analytics.js      ← Shared GA4 config (G-9LTV8JBT7C), loaded with defer
   crawulator/
     index.html        ← Crawfish Boil Calculator (3-tab: calc/cost/timeline)
+  Newman_Library/
+    index.html        ← Reading dashboard; expects reading-data.json alongside it
+                         (falls back to static content when the JSON is absent)
   _SKILLS/
     SKILL.md          ← This file
 ```
@@ -92,9 +102,9 @@ NewmanLabs/
 | Tool | Status | Path | Stack |
 |---|---|---|---|
 | Crawulator | ✅ Live | `/crawulator` | HTML, Vanilla JS |
-| VinTool | Coming soon | `/vintool` | FastAPI, SQLite, Python |
-| DeepDrive | Coming soon | `/deepdrive` | Electron, Node.js |
-| Library | Coming soon | `/library` | Dashboard, CSV pipeline |
+| VinTool 2.0 | ✅ Live | `/vintool` | HTML, Vanilla JS, NHTSA + EPA APIs (client-only) |
+| DeepDrive | ✅ Live | GitHub releases (external) | Electron, Node.js, v0.1.3 |
+| Library of Kellie Newman | ✅ Live | `/Newman_Library` | Dashboard, Goodreads widget, reading-data.json pipeline (JSON not yet committed) |
 
 ---
 

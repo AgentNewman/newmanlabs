@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google Analytics 4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9LTV8JBT7C"></script>
-<script src="/js/analytics.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9LTV8JBT7C"></script>
+<script defer src="/js/analytics.js"></script>
 <title>Crawulator — Crawfish Boil Calculator | Newman Labs</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -238,7 +240,7 @@
       <div class="big-card"><div class="big-card-label">Crawfish</div><div class="big-card-num" id="lbs-num">30</div><div class="big-card-unit">pounds</div></div>
       <div class="big-card"><div class="big-card-label">Water</div><div class="big-card-num" id="water-num">30</div><div class="big-card-unit">quarts</div></div>
       <div class="big-card"><div class="big-card-label">Dry Seasoning</div><div class="big-card-num" id="season-num">3</div><div class="big-card-unit" id="season-unit">lbs Zatarain's</div></div>
-      <div class="big-card"><div class="big-card-label">Liquid Seasoning</div><div class="big-card-num" id="season-num">3</div><div class="big-card-unit" id="season-unit">lbs Zatarain's</div></div>
+      <div class="big-card"><div class="big-card-label">Liquid Seasoning</div><div class="big-card-num">1</div><div class="big-card-unit">bottle</div></div>
     </div>
 
     <div class="grocery-list" id="grocery-list"></div>
@@ -281,12 +283,13 @@ const HEAT_LABELS=['Mild','Medium','Hot','Oh Lord','Cajun Tax'];
 const HEAT_MULT=[0.8,1.0,1.3,1.6,2.0];
 const LBS_PER={light:2.5,normal:3,heavy:4};
 let guests=10,eaterType='normal',heat=2;
+const TIP_SEED=Math.floor(Math.random()*3); // pick one tip per visit so it doesn't flicker on every input
 let extras={corn:true,potato:true,sausage:true,mushroom:false,onion:false,garlic:false};
 
 const PRICE_ITEMS=[
   {id:'crawfish',  label:'Sack of crawfish (30 lb)',       defPrice:45, qtyFn:(lb)=>Math.ceil(lb/30)},
   {id:'lemons',    label:'Sack of lemons',                  defPrice:6,  qtyFn:()=>1},
-  {id:'boil45',    label:'4.5 lb bag crawfish boil',        defPrice:8,  qtyFn:(lb)=>Math.ceil(lb*0.1/4.5)},
+  {id:'boil45',    label:'4.5 lb bag crawfish boil',        defPrice:8,  qtyFn:(lb,h)=>Math.ceil(lb*0.1*HEAT_MULT[h-1]/4.5)},
   {id:'boil1',     label:'1 lb bag crawfish boil',          defPrice:3,  qtyFn:(lb,h)=>h>=3?1:0},
   {id:'liquid',    label:'Bottle of liquid crawfish boil',  defPrice:5,  qtyFn:()=>1},
   {id:'potatoes',  label:'Sack of potatoes',                defPrice:7,  qtyFn:(lb)=>extras.potato?Math.ceil(lb*0.4/10):0},
@@ -335,7 +338,7 @@ function calcMain(){
     heat>=4?'At this heat: warn your guests. Have bread on the table — not optional.':heat>=3?'Add cayenne in stages — taste the water before dumping it all in.':'Medium heat keeps most guests happy. Hot sauce on the side for the brave.',
     'Budget 2 lbs of ice per person for drinks. People eat a long time at a crawfish boil.',
   ];
-  document.getElementById('tip-strip').textContent=tips[Math.floor(Math.random()*tips.length)];
+  document.getElementById('tip-strip').textContent=heat>=3?tips[2]:tips[[0,1,3][TIP_SEED]];
 }
 
 function buildPriceTable(){

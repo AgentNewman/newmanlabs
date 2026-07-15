@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <!-- Google Analytics 4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9LTV8JBT7C"></script>
-<script src="/js/analytics.js"></script>
-  <meta charset="UTF-8" />
+<script defer src="/js/analytics.js"></script>
   <title>Library of Velaris – Reading Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;700&display=swap" rel="stylesheet" />
 
   <style>
     /*
@@ -1333,8 +1337,6 @@
                         </div>
                       </article>
 
-                    </div>
-
                     <div class="insight-mini-grid">
                       <article class="insight-card">
                         <div class="insight-kicker">Reading habit</div>
@@ -1470,6 +1472,25 @@
       }
 
       /*
+        Null-safe DOM setters. Several stat/goal/court panels have been
+        removed from the markup over time while the render code still
+        references their IDs — these guards keep one missing element
+        from crashing the whole hydration pass.
+      */
+      function setText(id, value) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      }
+      function setWidth(id, value) {
+        const el = document.getElementById(id);
+        if (el) el.style.width = value;
+      }
+      function getText(id, fallback) {
+        const el = document.getElementById(id);
+        return (el && el.textContent) || fallback;
+      }
+
+      /*
         Hero section = first live Goodreads book becomes the featured read.
         If a cover exists, swap it in. Otherwise the fallback gradient remains.
       */
@@ -1574,33 +1595,33 @@
           : null;
 
         if (booksThisYear != null && yearlyGoal != null) {
-          document.getElementById("statYear").textContent = `${booksThisYear} / ${yearlyGoal}`;
-          document.getElementById("goalLabel").textContent = `“${yearlyGoal} tomes in ${challengeYear}”`;
-          document.getElementById("goalFill").style.width = `${pct}%`;
-          document.getElementById("goalStatus").textContent = `Status: ${pct}% of your ${challengeYear} quest`;
+          setText("statYear", `${booksThisYear} / ${yearlyGoal}`);
+          setText("goalLabel", `“${yearlyGoal} tomes in ${challengeYear}”`);
+          setWidth("goalFill", `${pct}%`);
+          setText("goalStatus", `Status: ${pct}% of your ${challengeYear} quest`);
         } else {
-          document.getElementById("statYear").textContent = `${total} total`;
-          document.getElementById("goalLabel").textContent = "“Goodreads challenge data unavailable”";
-          document.getElementById("goalFill").style.width = "0%";
-          document.getElementById("goalStatus").textContent = "Status: showing total books on your read shelf";
+          setText("statYear", `${total} total`);
+          setText("goalLabel", "“Goodreads challenge data unavailable”");
+          setWidth("goalFill", "0%");
+          setText("goalStatus", "Status: showing total books on your read shelf");
         }
 
-        document.getElementById("statPagesMonth").textContent = pagesToday > 0 ? pagesToday.toLocaleString() : "--";
-        document.getElementById("statAverage").textContent = "n/a";
+        setText("statPagesMonth", pagesToday > 0 ? pagesToday.toLocaleString() : "--");
+        setText("statAverage", "n/a");
 
-        document.getElementById("courtNight").textContent = "n/a";
-        document.getElementById("courtDay").textContent = "n/a";
-        document.getElementById("courtAutumn").textContent = "n/a";
-        document.getElementById("courtSpring").textContent = "n/a";
+        setText("courtNight", "n/a");
+        setText("courtDay", "n/a");
+        setText("courtAutumn", "n/a");
+        setText("courtSpring", "n/a");
 
         if (data.generated_at) {
           const date = new Date(data.generated_at);
-          document.getElementById("generatedAtLabel").textContent = `Last shelf sync: ${date.toLocaleString()}`;
+          setText("generatedAtLabel", `Last shelf sync: ${date.toLocaleString()}`);
         }
 
-        document.getElementById("heroProgressLabel").textContent = `Progress: ${pct != null ? pct : 0}%`;
-        document.getElementById("heroPagesLabel").textContent = `${pagesToday} pages today`;
-        document.getElementById("heroProgressFill").style.width = `${Math.max(12, pct != null ? pct : 0)}%`;
+        setText("heroProgressLabel", `Progress: ${pct != null ? pct : 0}%`);
+        setText("heroPagesLabel", `${pagesToday} pages today`);
+        setWidth("heroProgressFill", `${Math.max(12, pct != null ? pct : 0)}%`);
 
         return { books, total, pagesToday, booksThisYear, yearlyGoal, pct };
       }
@@ -1629,50 +1650,52 @@
         const topAuthor = rankedAuthors[0];
         const secondAuthor = rankedAuthors[1];
 
-        document.getElementById("velocityValue").textContent = `${estimatedPace} pages / day`;
-        document.getElementById("velocityEta").textContent = `~ ${estimatedDaysLeft} days left`;
-        document.getElementById("velocityCaption").textContent = pct != null
+        setText("velocityValue", `${estimatedPace} pages / day`);
+        setText("velocityEta", `~ ${estimatedDaysLeft} days left`);
+        setText("velocityCaption", pct != null
           ? `Current yearly quest pace: ${pct}% complete`
-          : "Estimated completion based on current pace";
+          : "Estimated completion based on current pace");
 
         /*
           Genre values remain placeholder-friendly because Goodreads data here
           does not currently provide explicit genre metadata. We mirror the
           court percentages until a richer data schema exists.
         */
-        document.getElementById("genreFantasy").textContent = document.getElementById("courtNight").textContent || "62%";
-        document.getElementById("genreSpooky").textContent = document.getElementById("courtAutumn").textContent || "17%";
-        document.getElementById("genreScifi").textContent = document.getElementById("courtDay").textContent || "14%";
-        document.getElementById("genreContemporary").textContent = document.getElementById("courtSpring").textContent || "7%";
+        setText("genreFantasy", getText("courtNight", "62%"));
+        setText("genreSpooky", getText("courtAutumn", "17%"));
+        setText("genreScifi", getText("courtDay", "14%"));
+        setText("genreContemporary", getText("courtSpring", "7%"));
 
-        document.getElementById("habitWindow").textContent = pagesToday > 30
+        setText("habitWindow", pagesToday > 30
           ? "Best momentum window: evening"
-          : "Best momentum window: building again";
+          : "Best momentum window: building again");
 
-        document.getElementById("completionPattern").textContent = topAuthor
+        setText("completionPattern", topAuthor
           ? `Shelf keeps orbiting back to ${topAuthor[0]}`
-          : "You finish faster when series momentum kicks in";
+          : "You finish faster when series momentum kicks in");
 
-        document.getElementById("seriesMaas").textContent = topAuthor
+        setText("seriesMaas", topAuthor
           ? `${topAuthor[1]} book${topAuthor[1] === 1 ? "" : "s"}`
-          : "9 books";
+          : "9 books");
 
-        document.getElementById("seriesYarros").textContent = secondAuthor
+        setText("seriesYarros", secondAuthor
           ? `${secondAuthor[1]} book${secondAuthor[1] === 1 ? "" : "s"}`
-          : "3 books";
+          : "3 books");
 
-        document.getElementById("seriesRereads").textContent = books.length >= 2 ? "2 active" : "1 active";
+        setText("seriesRereads", books.length >= 2 ? "2 active" : "1 active");
       }
 
       /*
         Main data fetch loop.
         reading-data.json is treated as the source of truth for the dashboard.
       */
+      let dataAvailable = false;
+
       async function loadData() {
         try {
           appShell.classList.add("is-loading");
           const res = await fetch("reading-data.json?cb=" + Date.now());
-          if (!res.ok) return;
+          if (!res.ok) return; // no data file yet — static content stays visible
           const data = await res.json();
           const books = (data.books || []).filter((b) => b.source === "goodreads");
 
@@ -1681,19 +1704,28 @@
           renderTbr(books);
           const summary = renderStats(data);
           renderInsights(summary);
-          appShell.classList.remove("is-loading");
+          dataAvailable = true;
         } catch (err) {
           console.error("Failed to load reading data", err);
+        } finally {
+          // Always clear the shimmer — a missing data file must not
+          // leave the dashboard in a permanent loading state.
           appShell.classList.remove("is-loading");
         }
       }
 
       /* Initial dashboard boot */
       pickMoonPhase();
-      loadData().catch(console.error);
 
-      /* Re-sync every 30 seconds so the page stays current */
-      setInterval(() => loadData().catch(console.error), 30000);
+      /* Re-sync every 30 seconds, but only if the data file actually exists —
+         no point polling a static 404 forever. */
+      loadData()
+        .then(() => {
+          if (dataAvailable) {
+            setInterval(() => loadData().catch(console.error), 30000);
+          }
+        })
+        .catch(console.error);
     })();
   </script>
 </body>

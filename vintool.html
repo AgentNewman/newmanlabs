@@ -3,16 +3,889 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9LTV8JBT7C"></script>
+<script defer src="/js/analytics.js"></script>
 <title>VinTool 2.0 — Newman Labs</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;
+  --s1:#101010;
+  --s2:#161616;
+  --s3:#1e1e1e;
+  --border:#242424;
+  --border2:#2e2e2e;
+  --amber:#f5a623;
+  --amber-lo:#b87a10;
+  --amber-glow:rgba(245,166,35,0.12);
+  --amber-glow2:rgba(245,166,35,0.06);
+  --red:#e84040;
+  --red-lo:rgba(232,64,64,0.15);
+  --green:#3ddc84;
+  --green-lo:rgba(61,220,132,0.12);
+  --blue:#4a9eff;
+  --yellow:#ffd166;
+  --text:#efefef;
+  --dim:#888;
+  --faint:#444;
+  --fainter:#2a2a2a;
+  --mono:'Fira Code',monospace;
+  --cond:'Barlow Condensed',sans-serif;
+  --body:'Barlow',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;overflow-x:hidden}
+
+/* GRID OVERLAY */
+body::after{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:48px 48px;opacity:.12;pointer-events:none;z-index:0}
+
+/* SCANLINES */
+body::before{content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.025) 2px,rgba(0,0,0,.025) 4px);
+  pointer-events:none;z-index:9999}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(8,8,8,.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  height:52px;padding:0 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem
+}
+.nav-left{display:flex;align-items:center;gap:.75rem}
+.nav-logo{font-family:var(--mono);font-size:.72rem;color:var(--amber);letter-spacing:.08em}
+.nav-pipe{width:1px;height:16px;background:var(--border2)}
+.nav-tool{font-family:var(--cond);font-size:.95rem;font-weight:700;color:var(--dim);letter-spacing:.12em;text-transform:uppercase}
+.nav-ver{font-family:var(--mono);font-size:.6rem;color:var(--faint);letter-spacing:.05em}
+.nav-right{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.68rem;color:var(--dim)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* MAIN */
+main{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:3rem 1.5rem 6rem}
+
+/* HERO */
+.hero{margin-bottom:2.5rem}
+.hero-tag{font-family:var(--mono);font-size:.65rem;color:var(--amber-lo);letter-spacing:.25em;text-transform:uppercase;margin-bottom:.75rem}
+.hero-title{font-family:var(--cond);font-size:clamp(2.8rem,7vw,5rem);font-weight:800;line-height:.95;letter-spacing:-.01em;margin-bottom:.75rem}
+.hero-title em{font-style:normal;color:var(--amber)}
+.hero-sub{font-family:var(--body);font-size:.88rem;color:var(--dim);max-width:480px;line-height:1.7;font-weight:300}
+
+/* DATA SOURCES BAR */
+.sources-bar{
+  display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:2.5rem
+}
+.source-pill{
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.25rem .6rem;border:1px solid var(--border2);color:var(--faint);
+  transition:color .15s,border-color .15s
+}
+.source-pill.active{color:var(--amber-lo);border-color:var(--amber-lo)}
+
+/* INPUT */
+.input-wrap{
+  display:flex;border:1px solid var(--border2);background:var(--s1);
+  margin-bottom:.5rem;transition:border-color .2s,box-shadow .2s
+}
+.input-wrap:focus-within{
+  border-color:var(--amber);
+  box-shadow:0 0 0 1px var(--amber),0 0 32px var(--amber-glow)
+}
+.input-prefix{
+  display:flex;align-items:center;padding:0 1rem;
+  background:var(--s2);border-right:1px solid var(--border2);
+  font-family:var(--mono);font-size:.7rem;color:var(--amber-lo);
+  letter-spacing:.05em;user-select:none;white-space:nowrap
+}
+#vin-input{
+  flex:1;background:transparent;border:none;outline:none;
+  padding:1rem 1.25rem;font-family:var(--mono);font-size:1.05rem;
+  color:var(--text);letter-spacing:.15em;text-transform:uppercase
+}
+#vin-input::placeholder{color:var(--faint);letter-spacing:.06em}
+.counter{
+  display:flex;align-items:center;padding:0 .75rem;
+  font-family:var(--mono);font-size:.7rem;color:var(--faint);white-space:nowrap
+}
+.counter.ok{color:var(--green)}
+.counter.bad{color:var(--red)}
+.go-btn{
+  display:flex;align-items:center;gap:.4rem;padding:0 1.5rem;
+  background:var(--amber);border:none;cursor:pointer;
+  font-family:var(--cond);font-size:.9rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:#080808;
+  transition:background .15s,transform .1s;white-space:nowrap
+}
+.go-btn:hover{background:#ffb83f}
+.go-btn:active{transform:scale(.98)}
+.go-btn:disabled{background:var(--border2);color:var(--faint);cursor:not-allowed}
+.err{
+  display:none;font-family:var(--mono);font-size:.72rem;
+  color:var(--red);padding:.4rem 0 0 .2rem
+}
+
+/* PROGRESS BAR */
+.progress-wrap{display:none;margin-bottom:1.5rem}
+.progress-wrap.show{display:block}
+.progress-track{height:2px;background:var(--s3);position:relative;overflow:hidden}
+.progress-fill{
+  height:100%;background:var(--amber);width:0%;
+  transition:width .4s ease;position:absolute
+}
+.progress-label{
+  font-family:var(--mono);font-size:.68rem;color:var(--dim);
+  margin-top:.5rem;letter-spacing:.05em
+}
+
+/* RESULTS */
+#results{display:none}
+#results.show{display:block}
+
+/* VEHICLE HEADER */
+.veh-header{
+  padding:1.5rem 0 1.25rem;
+  border-bottom:1px solid var(--border);
+  margin-bottom:1.5rem
+}
+.veh-vin{font-family:var(--mono);font-size:.68rem;color:var(--amber-lo);letter-spacing:.2em;margin-bottom:.4rem}
+.veh-name{font-family:var(--cond);font-size:clamp(1.8rem,4vw,3rem);font-weight:800;letter-spacing:-.01em;line-height:1}
+.veh-sub{font-family:var(--mono);font-size:.72rem;color:var(--dim);margin-top:.4rem;letter-spacing:.05em}
+
+/* SPEC GRID */
+.spec-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:1px;background:var(--border);border:1px solid var(--border);
+  margin-bottom:1.5rem
+}
+.spec-cell{background:var(--s1);padding:1rem 1.1rem}
+.spec-label{font-family:var(--mono);font-size:.58rem;color:var(--amber-lo);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.3rem}
+.spec-val{font-family:var(--mono);font-size:.85rem;color:var(--text);line-height:1.3}
+.spec-val.empty{color:var(--faint);font-style:italic}
+
+/* TABS */
+.tabs-nav{
+  display:flex;border-bottom:1px solid var(--border);
+  margin-bottom:1.5rem;gap:0;overflow-x:auto
+}
+.tab-btn{
+  font-family:var(--cond);font-size:.88rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:.75rem 1.25rem;border:none;background:transparent;
+  color:var(--faint);cursor:pointer;border-bottom:2px solid transparent;
+  white-space:nowrap;transition:color .15s,border-color .15s;
+  display:flex;align-items:center;gap:.5rem
+}
+.tab-btn:hover{color:var(--dim)}
+.tab-btn.active{color:var(--amber);border-bottom-color:var(--amber)}
+.tab-count{
+  font-family:var(--mono);font-size:.6rem;
+  padding:.15rem .35rem;background:var(--s3);
+  color:var(--dim);min-width:1.2rem;text-align:center
+}
+.tab-count.has-data{background:var(--amber-glow);color:var(--amber)}
+.tab-count.warn{background:var(--red-lo);color:var(--red)}
+
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* FUEL ECONOMY PANEL */
+.mpg-hero{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);margin-bottom:1rem
+}
+.mpg-cell{background:var(--s1);padding:1.25rem;text-align:center}
+.mpg-num{font-family:var(--cond);font-size:3rem;font-weight:800;color:var(--amber);line-height:1}
+.mpg-unit{font-family:var(--mono);font-size:.6rem;color:var(--amber-lo);letter-spacing:.15em;margin-top:.2rem}
+.mpg-label{font-family:var(--mono);font-size:.6rem;color:var(--faint);letter-spacing:.12em;margin-top:.5rem}
+.fuel-meta-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:1px;background:var(--border);border:1px solid var(--border)
+}
+.fuel-meta-cell{background:var(--s1);padding:.85rem 1rem}
+.fuel-meta-label{font-family:var(--mono);font-size:.58rem;color:var(--faint);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.3rem}
+.fuel-meta-val{font-family:var(--mono);font-size:.8rem;color:var(--text)}
+
+/* SAFETY RATINGS */
+.stars-hero{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:1rem
+}
+.star-cell{background:var(--s1);padding:1.1rem 1.2rem}
+.star-label{font-family:var(--mono);font-size:.58rem;color:var(--faint);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.5rem}
+.star-display{display:flex;align-items:center;gap:.5rem}
+.stars{font-size:1.1rem;letter-spacing:.05em}
+.star-num{font-family:var(--cond);font-size:1.4rem;font-weight:700;color:var(--amber)}
+.star-na{font-family:var(--mono);font-size:.75rem;color:var(--faint)}
+
+/* RECALLS + COMPLAINTS */
+.section-hdr{
+  display:flex;align-items:center;gap:.75rem;
+  margin-bottom:.75rem
+}
+.section-hdr-title{font-family:var(--cond);font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--dim)}
+.badge{font-family:var(--mono);font-size:.6rem;padding:.15rem .45rem}
+.badge-warn{background:var(--red-lo);color:var(--red);border:1px solid var(--red)}
+.badge-ok{background:var(--green-lo);color:var(--green);border:1px solid var(--green)}
+.badge-neutral{background:var(--s3);color:var(--dim);border:1px solid var(--border2)}
+
+.item-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border)}
+.item{background:var(--s1);padding:1rem 1.2rem;transition:background .12s}
+.item:hover{background:var(--s2)}
+.item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.4rem}
+.item-id{font-family:var(--mono);font-size:.6rem;color:var(--amber-lo);letter-spacing:.1em}
+.item-flags{display:flex;gap:.3rem;flex-wrap:wrap}
+.flag{font-family:var(--mono);font-size:.55rem;padding:.1rem .35rem}
+.flag-crash{background:rgba(232,64,64,.2);color:var(--red);border:1px solid rgba(232,64,64,.3)}
+.flag-fire{background:rgba(245,166,35,.15);color:var(--amber);border:1px solid rgba(245,166,35,.25)}
+.flag-injury{background:rgba(74,158,255,.15);color:var(--blue);border:1px solid rgba(74,158,255,.25)}
+.flag-death{background:#1a0a0a;color:#ff4444;border:1px solid #3a1010}
+.item-title{font-family:var(--cond);font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.35rem}
+.item-body{font-family:var(--body);font-size:.78rem;color:var(--dim);line-height:1.65;font-weight:300}
+.item-remedy{
+  margin-top:.6rem;padding:.6rem .75rem;
+  background:var(--s3);border-left:2px solid var(--amber-lo);
+  font-family:var(--mono);font-size:.7rem;color:var(--dim);line-height:1.5
+}
+.item-remedy strong{color:var(--amber-lo);font-weight:400;letter-spacing:.05em}
+
+/* EMPTY / LOADING STATES */
+.state-msg{
+  padding:2rem;font-family:var(--mono);font-size:.8rem;
+  color:var(--faint);text-align:center;border:1px solid var(--border);
+  background:var(--s1)
+}
+.state-msg.loading{display:flex;align-items:center;justify-content:center;gap:.75rem}
+.spinner{
+  width:14px;height:14px;border:2px solid var(--border2);
+  border-top-color:var(--amber);border-radius:50%;
+  animation:spin .7s linear infinite;flex-shrink:0
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.state-ok{color:var(--green)}
+.state-warn{color:var(--red)}
+
+/* HISTORY */
+.history{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}
+.history-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.history-title{font-family:var(--mono);font-size:.65rem;color:var(--faint);letter-spacing:.18em;text-transform:uppercase}
+.clear-btn{background:none;border:none;font-family:var(--mono);font-size:.62rem;color:var(--faint);cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:color .15s}
+.clear-btn:hover{color:var(--red)}
+.history-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border)}
+.history-item{
+  background:var(--s1);padding:.75rem 1.1rem;
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;transition:background .12s;gap:1rem
+}
+.history-item:hover{background:var(--s2)}
+.h-vin{font-family:var(--mono);font-size:.78rem;color:var(--amber);letter-spacing:.12em;flex-shrink:0}
+.h-label{font-family:var(--body);font-size:.8rem;color:var(--dim);text-align:right;font-weight:300}
+
+/* FOOTER */
+footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--border);
+  padding:1.25rem 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1rem
+}
+.footer-l{font-family:var(--mono);font-size:.65rem;color:var(--faint)}
+.footer-l a{color:var(--amber-lo);text-decoration:none}
+.footer-r{font-family:var(--mono);font-size:.6rem;color:var(--fainter);letter-spacing:.04em}
+
+/* ANIM */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeUp .3s ease forwards}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .input-wrap{flex-direction:column}
+  .input-prefix{border-right:none;border-bottom:1px solid var(--border2);padding:.5rem 1rem}
+  .counter{justify-content:flex-end;padding:.5rem 1rem;border-top:1px solid var(--border2)}
+  .go-btn{padding:1rem;justify-content:center}
+  .mpg-hero{grid-template-columns:1fr 1fr}
+  nav{padding:0 1rem}
+  main{padding:2rem 1rem 5rem}
+}
+</style>
 </head>
 <body>
+
+<nav>
+  <div class="nav-left">
+    <span class="nav-logo">NEWMAN_LABS</span>
+    <span class="nav-pipe"></span>
+    <span class="nav-tool">VinTool</span>
+    <span class="nav-ver">v2.0</span>
+  </div>
+  <div class="nav-right">
+    <span class="live-dot"></span>
+    5 DATA SOURCES LIVE
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-tag">// vehicle intelligence decoder</div>
+    <h1 class="hero-title">Know your<br><em>vehicle.</em></h1>
+    <p class="hero-sub">Paste any VIN. Get full specs, safety star ratings, open recalls, owner complaints, and EPA fuel economy — all from official government sources. Free, no account, no ads.</p>
+  </div>
+
+  <div class="sources-bar">
+    <span class="source-pill active" id="pill-nhtsa">NHTSA vPIC · Specs</span>
+    <span class="source-pill" id="pill-safety">NHTSA · Safety Ratings</span>
+    <span class="source-pill" id="pill-recalls">NHTSA · Recalls</span>
+    <span class="source-pill" id="pill-complaints">NHTSA · Complaints</span>
+    <span class="source-pill" id="pill-epa">EPA · Fuel Economy</span>
+  </div>
+
+  <div class="input-wrap">
+    <div class="input-prefix">VIN //</div>
+    <input id="vin-input" type="text" maxlength="17" placeholder="1HGBH41JXMN109186" autocomplete="off" spellcheck="false">
+    <div class="counter" id="counter">0/17</div>
+    <button class="go-btn" id="go-btn" disabled>Decode <span>→</span></button>
+  </div>
+  <div class="err" id="err"></div>
+
+  <div class="progress-wrap" id="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-label" id="progress-label">Initializing...</div>
+  </div>
+
+  <div id="results">
+
+    <div class="veh-header anim">
+      <div class="veh-vin" id="r-vin"></div>
+      <div class="veh-name" id="r-name"></div>
+      <div class="veh-sub" id="r-sub"></div>
+    </div>
+
+    <div class="spec-grid anim" id="spec-grid"></div>
+
+    <div class="tabs-nav anim" id="tabs-nav">
+      <button class="tab-btn active" data-tab="fuel">
+        Fuel Economy <span class="tab-count" id="tc-fuel">—</span>
+      </button>
+      <button class="tab-btn" data-tab="safety">
+        Safety Ratings <span class="tab-count" id="tc-safety">—</span>
+      </button>
+      <button class="tab-btn" data-tab="recalls">
+        Recalls <span class="tab-count" id="tc-recalls">—</span>
+      </button>
+      <button class="tab-btn" data-tab="complaints">
+        Complaints <span class="tab-count" id="tc-complaints">—</span>
+      </button>
+    </div>
+
+    <!-- FUEL TAB -->
+    <div class="tab-panel active anim" id="tab-fuel">
+      <div class="state-msg loading" id="fuel-loading"><div class="spinner"></div>Fetching EPA data...</div>
+      <div id="fuel-content" style="display:none"></div>
+    </div>
+
+    <!-- SAFETY TAB -->
+    <div class="tab-panel anim" id="tab-safety">
+      <div class="state-msg loading" id="safety-loading"><div class="spinner"></div>Fetching NCAP ratings...</div>
+      <div id="safety-content" style="display:none"></div>
+    </div>
+
+    <!-- RECALLS TAB -->
+    <div class="tab-panel anim" id="tab-recalls">
+      <div class="state-msg loading" id="recalls-loading"><div class="spinner"></div>Checking recall database...</div>
+      <div id="recalls-content" style="display:none"></div>
+    </div>
+
+    <!-- COMPLAINTS TAB -->
+    <div class="tab-panel anim" id="tab-complaints">
+      <div class="state-msg loading" id="complaints-loading"><div class="spinner"></div>Loading owner complaints...</div>
+      <div id="complaints-content" style="display:none"></div>
+    </div>
+
+  </div><!-- /results -->
+
+  <div class="history" id="history-section">
+    <div class="history-hdr">
+      <div class="history-title">// session history</div>
+      <button class="clear-btn" id="clear-btn">Clear</button>
+    </div>
+    <div id="history-list"><div class="state-msg">No lookups this session.</div></div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-l"><a href="https://newmanlabs.dev">Newman Labs</a> · Albany, Louisiana</div>
+  <div class="footer-r">Data: NHTSA vPIC · NHTSA ODI · EPA FuelEconomy.gov · All public government APIs · No data stored server-side</div>
+</footer>
+
 <script>
-// Redirect to full vintool — this stub will be replaced by git push
-// Full file is in NewmanLabs repo as vintool.html
-window.location.href = '/';
+// ─── CONSTANTS ───────────────────────────────────────────────────────────────
+const VPIC    = 'https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues';
+const RECALLS = 'https://api.nhtsa.gov/recalls/recallsByVehicle';
+const COMPLAINTS = 'https://api.nhtsa.gov/complaints/complaintsByVehicle';
+const SAFETY  = 'https://api.nhtsa.gov/SafetyRatings';
+
+const VIN_RE = /^[A-HJ-NPR-Z0-9]{17}$/i;
+const BANNED = /[IOQ]/i;
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let sessionHistory = [];
+let currentVehicle = {};
+
+// ─── ELEMENTS ────────────────────────────────────────────────────────────────
+const vinInput    = document.getElementById('vin-input');
+const counter     = document.getElementById('counter');
+const goBtn       = document.getElementById('go-btn');
+const errEl       = document.getElementById('err');
+const progressWrap= document.getElementById('progress-wrap');
+const progressFill= document.getElementById('progress-fill');
+const progressLabel=document.getElementById('progress-label');
+const resultsEl   = document.getElementById('results');
+
+// ─── INPUT HANDLING ───────────────────────────────────────────────────────────
+vinInput.addEventListener('input', () => {
+  const v = vinInput.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+  vinInput.value = v;
+  const n = v.length;
+  counter.textContent = `${n}/17`;
+  counter.className = 'counter';
+  errEl.style.display = 'none';
+  if(n===17 && !BANNED.test(v)){ counter.className='counter ok'; goBtn.disabled=false; }
+  else if(n>0 && (BANNED.test(v)||n>17)){ counter.className='counter bad'; goBtn.disabled=true; }
+  else { goBtn.disabled=true; }
+});
+vinInput.addEventListener('keydown', e => { if(e.key==='Enter' && !goBtn.disabled) goBtn.click(); });
+
+// ─── TAB SWITCHING ────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ─── PROGRESS ────────────────────────────────────────────────────────────────
+function setProgress(pct, label) {
+  progressFill.style.width = pct+'%';
+  progressLabel.textContent = label;
+}
+
+// ─── PILL ACTIVATION ──────────────────────────────────────────────────────────
+function activatePill(id) {
+  document.getElementById(id).classList.add('active');
+}
+
+// ─── STAR RENDERER ───────────────────────────────────────────────────────────
+function renderStars(n) {
+  if(!n || n<=0) return '<span class="star-na">N/A</span>';
+  const filled = '★'.repeat(n);
+  const empty  = '☆'.repeat(5-n);
+  return `<div class="star-display"><span class="stars" style="color:var(--amber)">${filled}<span style="color:var(--faint)">${empty}</span></span><span class="star-num">${n}</span></div>`;
+}
+
+// ─── TRUNCATE ────────────────────────────────────────────────────────────────
+function trunc(s, n=300) { if(!s) return ''; return s.length>n ? s.substring(0,n)+'…' : s; }
+
+// ─── HTML ESCAPE ─────────────────────────────────────────────────────────────
+// API data (especially NHTSA complaint narratives, which are free-text consumer
+// submissions) must never hit innerHTML unescaped.
+function esc(s) {
+  return String(s??'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ─── VARIANT MATCHING ────────────────────────────────────────────────────────
+// NCAP/EPA return multiple trim/drivetrain variants per make+model+year.
+// Score each variant's description against the decoded VIN's trim/drive/body
+// so a 4WD VIN doesn't get shown the 2WD's ratings or MPG.
+function bestMatch(list, getDesc, hint) {
+  if(!list.length) return null;
+  if(list.length===1 || !hint) return list[0];
+  const tokens = hint.toUpperCase().split(/[^A-Z0-9]+/).filter(t=>t.length>1);
+  let pick = list[0], best = -1;
+  for(const item of list) {
+    const desc = String(getDesc(item)||'').toUpperCase();
+    const score = tokens.reduce((a,t)=>a+(desc.includes(t)?1:0),0);
+    if(score > best) { best = score; pick = item; }
+  }
+  return pick;
+}
+
+// ─── MAIN DECODE ─────────────────────────────────────────────────────────────
+goBtn.addEventListener('click', async () => {
+  const vin = vinInput.value.trim().toUpperCase();
+  if(!VIN_RE.test(vin)) { showErr('Invalid VIN — 17 alphanumeric chars, no I/O/Q.'); return; }
+
+  // reset UI
+  errEl.style.display='none';
+  resultsEl.classList.remove('show');
+  progressWrap.classList.add('show');
+  goBtn.disabled=true;
+  document.querySelectorAll('.source-pill').forEach(p => p.classList.remove('active'));
+  document.getElementById('pill-nhtsa').classList.add('active');
+  setProgress(5,'Querying NHTSA vPIC database...');
+
+  // reset tab loading states
+  ['fuel','safety','recalls','complaints'].forEach(t => {
+    document.getElementById(t+'-loading').style.display='flex';
+    document.getElementById(t+'-content').style.display='none';
+    document.getElementById('tc-'+t).textContent='—';
+    document.getElementById('tc-'+t).className='tab-count';
+  });
+
+  try {
+    // ── STEP 1: DECODE VIN ────────────────────────────────────────────────
+    const decRes = await fetch(`${VPIC}/${vin}?format=json`);
+    if(!decRes.ok) throw new Error('NHTSA vPIC API error');
+    const decData = await decRes.json();
+    const v = decData.Results[0];
+
+    if(!v.Make && !v.Model) throw new Error('VIN not found in NHTSA database. Verify the VIN and try again.');
+
+    // parse fields
+    const year  = v.ModelYear||'';
+    const make  = v.Make||'';
+    const model = v.Model||'';
+    const trim  = v.Trim||'';
+    const body  = v.BodyClass||'';
+    const doors = v.Doors||'';
+    const engine= [v.DisplacementL?v.DisplacementL+'L':'', v.EngineCylinders?v.EngineCylinders+'-cyl':'', v.FuelTypePrimary||''].filter(Boolean).join(' · ');
+    const drive = v.DriveType||'';
+    const trans = v.TransmissionStyle||'';
+    const gvwr  = v.GVWR||'';
+    const plant = [v.PlantCity,v.PlantState,v.PlantCountry].filter(Boolean).join(', ');
+    const mfr   = v.Manufacturer||'';
+    const series= v.Series||'';
+    const vehicleLabel = [year,make,model,trim].filter(Boolean).join(' ');
+
+    currentVehicle = {vin,year,make,model,trim,vehicleLabel};
+
+    // populate header
+    document.getElementById('r-vin').textContent = vin;
+    document.getElementById('r-name').textContent = vehicleLabel||'Unknown Vehicle';
+    document.getElementById('r-sub').textContent = [body,series,mfr].filter(Boolean).join(' · ');
+
+    // populate spec grid
+    const specs = [
+      {l:'Year',v:year},{l:'Make',v:make},{l:'Model',v:model},{l:'Trim',v:trim},
+      {l:'Body Class',v:body},{l:'Doors',v:doors},{l:'Engine',v:engine},
+      {l:'Drive Type',v:drive},{l:'Transmission',v:trans},{l:'GVWR',v:gvwr},
+      {l:'Assembly Plant',v:plant},{l:'Manufacturer',v:mfr},
+    ];
+    document.getElementById('spec-grid').innerHTML = specs.map(s =>
+      `<div class="spec-cell"><div class="spec-label">${s.l}</div><div class="spec-val ${s.v?'':'empty'}">${esc(s.v)||'Not reported'}</div></div>`
+    ).join('');
+
+    setProgress(25,'Specs decoded. Fetching safety ratings...');
+    activatePill('pill-safety');
+    resultsEl.classList.add('show');
+
+    // save history
+    sessionHistory = sessionHistory.filter(e=>e.vin!==vin);
+    sessionHistory.push({vin,label:vehicleLabel});
+    renderHistory();
+
+    // ── STEPS 2–5: PARALLEL FETCHES ───────────────────────────────────────
+    const variantHint = [trim, drive, body, series].filter(Boolean).join(' ');
+    const [safetyData, recallsData, complaintsData, epaData] = await Promise.allSettled([
+      fetchSafety(year, make, model, variantHint),
+      fetchRecalls(make, model, year),
+      fetchComplaints(make, model, year),
+      fetchEPA(make, model, year, [trans, drive, trim].filter(Boolean).join(' ')),
+    ]);
+
+    setProgress(90,'Assembling results...');
+    renderSafety(safetyData.value||null);
+    renderRecalls(recallsData.value||[]);
+    renderComplaints(complaintsData.value||[]);
+    renderEPA(epaData.value||null);
+
+    setProgress(100,'Done.');
+    setTimeout(()=>{ progressWrap.classList.remove('show'); },600);
+    goBtn.disabled=false;
+
+  } catch(err) {
+    progressWrap.classList.remove('show');
+    goBtn.disabled=false;
+    showErr(err.message||'Something went wrong. Check the VIN and try again.');
+  }
+});
+
+// ─── FETCH HELPERS ────────────────────────────────────────────────────────────
+async function fetchSafety(year, make, model, hint) {
+  activatePill('pill-safety');
+  setProgress(35,'Fetching NCAP crash test ratings...');
+  try {
+    // get vehicle ID list
+    const r = await fetch(`${SAFETY}/modelyear/${year}/make/${encodeURIComponent(make)}/model/${encodeURIComponent(model)}?format=json`);
+    if(!r.ok) return null;
+    const d = await r.json();
+    if(!d.Results||!d.Results.length) return null;
+    // pick the variant that best matches the decoded trim/drive
+    const vid = bestMatch(d.Results, x=>x.VehicleDescription, hint).VehicleId;
+    const r2 = await fetch(`${SAFETY}/vehicleId/${vid}?format=json`);
+    if(!r2.ok) return null;
+    const d2 = await r2.json();
+    return d2.Results?.[0]||null;
+  } catch { return null; }
+}
+
+async function fetchRecalls(make, model, year) {
+  activatePill('pill-recalls');
+  setProgress(50,'Checking recall database...');
+  if(!make||!model||!year) return [];
+  try {
+    const r = await fetch(`${RECALLS}?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&modelYear=${encodeURIComponent(year)}`);
+    if(!r.ok) return [];
+    const d = await r.json();
+    return d.results||[];
+  } catch { return []; }
+}
+
+async function fetchComplaints(make, model, year) {
+  activatePill('pill-complaints');
+  setProgress(65,'Loading owner complaints...');
+  if(!make||!model||!year) return [];
+  try {
+    const r = await fetch(`${COMPLAINTS}?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&modelYear=${encodeURIComponent(year)}`);
+    if(!r.ok) return [];
+    const d = await r.json();
+    return d.results||[];
+  } catch { return []; }
+}
+
+async function fetchEPA(make, model, year, hint) {
+  activatePill('pill-epa');
+  setProgress(80,'Fetching EPA fuel economy data...');
+  if(!make||!model||!year) return null;
+  try {
+    // find EPA vehicle ID by make/model/year
+    const r = await fetch(`https://www.fueleconomy.gov/ws/rest/vehicle/menu/options?year=${year}&make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`,
+      {headers:{'Accept':'application/json'}});
+    if(!r.ok) throw new Error();
+    const d = await r.json();
+    // menuItem can be array or object
+    let items = d.menuItem;
+    if(!items) throw new Error();
+    if(!Array.isArray(items)) items=[items];
+    if(!items.length) throw new Error();
+    // pick the option whose text best matches the decoded transmission/drive/trim
+    const vid = bestMatch(items, x=>x.text, hint).value;
+    const r2 = await fetch(`https://www.fueleconomy.gov/ws/rest/vehicle/${vid}`,
+      {headers:{'Accept':'application/json'}});
+    if(!r2.ok) throw new Error();
+    return await r2.json();
+  } catch { return null; }
+}
+
+// ─── RENDERERS ────────────────────────────────────────────────────────────────
+
+function renderEPA(data) {
+  const loading = document.getElementById('fuel-loading');
+  const content = document.getElementById('fuel-content');
+  const tc = document.getElementById('tc-fuel');
+  loading.style.display='none';
+  content.style.display='block';
+  if(!data) {
+    tc.textContent='N/A'; tc.className='tab-count';
+    content.innerHTML=`<div class="state-msg">EPA fuel economy data not available for this vehicle configuration.</div>`;
+    return;
+  }
+  const city = data.city08||data.cityE||'—';
+  const hwy  = data.highway08||data.highwayE||'—';
+  const comb = data.comb08||data.combE||'—';
+  const cost = data.fuelCost08 ? `$${data.fuelCost08}/yr` : '—';
+  const co2  = data.co2TailpipeGpm ? `${Math.round(data.co2TailpipeGpm)}g/mi` : '—';
+  const fuelType = data.fuelType1||data.fuelType||'—';
+  const range= data.range||data.rangeCity||'';
+  const ghg  = data.ghgScore||'—';
+  const evRange = data.rangeA||'';
+
+  tc.textContent = comb!=='—'?`${comb} MPG`:'EPA';
+  tc.className='tab-count has-data';
+
+  content.innerHTML = `
+    <div class="mpg-hero">
+      <div class="mpg-cell">
+        <div class="mpg-num">${city}</div>
+        <div class="mpg-unit">MPG</div>
+        <div class="mpg-label">City</div>
+      </div>
+      <div class="mpg-cell">
+        <div class="mpg-num" style="color:var(--green)">${comb}</div>
+        <div class="mpg-unit" style="color:var(--green);opacity:.7">MPG</div>
+        <div class="mpg-label">Combined</div>
+      </div>
+      <div class="mpg-cell">
+        <div class="mpg-num">${hwy}</div>
+        <div class="mpg-unit">MPG</div>
+        <div class="mpg-label">Highway</div>
+      </div>
+    </div>
+    <div class="fuel-meta-grid">
+      <div class="fuel-meta-cell"><div class="fuel-meta-label">Annual Fuel Cost</div><div class="fuel-meta-val">${cost}</div></div>
+      <div class="fuel-meta-cell"><div class="fuel-meta-label">Fuel Type</div><div class="fuel-meta-val">${esc(fuelType)}</div></div>
+      <div class="fuel-meta-cell"><div class="fuel-meta-label">CO₂ Tailpipe</div><div class="fuel-meta-val">${co2}</div></div>
+      <div class="fuel-meta-cell"><div class="fuel-meta-label">EPA GHG Score</div><div class="fuel-meta-val">${ghg}</div></div>
+      ${range?`<div class="fuel-meta-cell"><div class="fuel-meta-label">Range</div><div class="fuel-meta-val">${esc(range)} mi</div></div>`:''}
+      ${evRange?`<div class="fuel-meta-cell"><div class="fuel-meta-label">EV Range</div><div class="fuel-meta-val">${esc(evRange)} mi</div></div>`:''}
+    </div>
+    <div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:.6rem;padding:.4rem 0">
+      Based on 15,000 mi/yr, 55% city driving. Source: EPA FuelEconomy.gov — ${esc(data.year)} ${esc(data.make)} ${esc(data.model)} ${esc(data.trany)}
+    </div>
+  `;
+}
+
+function renderSafety(data) {
+  const loading = document.getElementById('safety-loading');
+  const content = document.getElementById('safety-content');
+  const tc = document.getElementById('tc-safety');
+  loading.style.display='none';
+  content.style.display='block';
+  if(!data) {
+    tc.textContent='N/A'; tc.className='tab-count';
+    content.innerHTML=`<div class="state-msg">NCAP safety ratings not available for this vehicle. Ratings are conducted on a subset of new vehicles each year.</div>`;
+    return;
+  }
+  const overall = data.OverallRating||0;
+  tc.textContent = overall ? `${overall}★` : 'N/A';
+  tc.className = overall>=4?'tab-count has-data':'tab-count';
+
+  const ratings = [
+    {l:'Overall Rating',       v:data.OverallRating},
+    {l:'Overall Frontal',      v:data.OverallFrontCrashRating},
+    {l:'Driver Frontal',       v:data.DriverFrontCrashRating},
+    {l:'Passenger Frontal',    v:data.PassengerFrontCrashRating},
+    {l:'Overall Side',         v:data.OverallSideCrashRating},
+    {l:'Driver Side',          v:data.DriverSideCrashRating},
+    {l:'Passenger Side',       v:data.PassengerSideCrashRating},
+    {l:'Rollover Resistance',  v:data.RolloverRating},
+  ];
+
+  content.innerHTML = `
+    <div class="stars-hero">
+      ${ratings.map(r=>`
+        <div class="star-cell">
+          <div class="star-label">${r.l}</div>
+          ${renderStars(parseInt(r.v)||0)}
+        </div>
+      `).join('')}
+    </div>
+    ${data.VehiclePicture?`<div style="margin-top:1rem;font-family:var(--mono);font-size:.6rem;color:var(--faint)">NHTSA Vehicle ID: ${esc(data.VehicleId)||'—'} · ${esc(data.VehicleDescription)}</div>`:''}
+    <div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:.5rem">Source: NHTSA New Car Assessment Program (NCAP)</div>
+  `;
+}
+
+function renderRecalls(data) {
+  const loading = document.getElementById('recalls-loading');
+  const content = document.getElementById('recalls-content');
+  const tc = document.getElementById('tc-recalls');
+  loading.style.display='none';
+  content.style.display='block';
+  const n = data.length;
+  if(n===0) {
+    tc.textContent='0'; tc.className='tab-count has-data';
+    content.innerHTML=`<div class="state-msg state-ok">✓ No open recalls found for this vehicle configuration.</div>`;
+    return;
+  }
+  tc.textContent=n; tc.className='tab-count warn';
+  content.innerHTML=`
+    <div class="item-list">
+      ${data.map(r=>`
+        <div class="item">
+          <div class="item-top">
+            <div class="item-id">Campaign: ${esc(r.NHTSACampaignNumber)||'N/A'} · ${r.ReportReceivedDate?esc(r.ReportReceivedDate.split('T')[0]):''}</div>
+          </div>
+          <div class="item-title">${esc(r.Component)||'Unknown Component'}</div>
+          <div class="item-body">${esc(trunc(r.Summary||r.Consequence||'No summary available.',320))}</div>
+          ${r.Remedy?`<div class="item-remedy"><strong>REMEDY //</strong> ${esc(trunc(r.Remedy,280))}</div>`:''}
+        </div>
+      `).join('')}
+    </div>
+    <div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:.6rem">Source: NHTSA Office of Defects Investigation · Recalls are by make/model/year — check NHTSA.gov to confirm status for your specific VIN</div>
+  `;
+}
+
+function renderComplaints(data) {
+  const loading = document.getElementById('complaints-loading');
+  const content = document.getElementById('complaints-content');
+  const tc = document.getElementById('tc-complaints');
+  loading.style.display='none';
+  content.style.display='block';
+  const n = data.length;
+  if(n===0) {
+    tc.textContent='0'; tc.className='tab-count';
+    content.innerHTML=`<div class="state-msg">No owner complaints on file for this vehicle configuration.</div>`;
+    return;
+  }
+  tc.textContent=n; tc.className = n>10?'tab-count warn':'tab-count has-data';
+
+  content.innerHTML=`
+    <div class="item-list">
+      ${data.slice(0,25).map(c=>{
+        const flags=[];
+        if(c.crash) flags.push('<span class="flag flag-crash">CRASH</span>');
+        if(c.fire)  flags.push('<span class="flag flag-fire">FIRE</span>');
+        if(parseInt(c.numberOfInjuries)>0) flags.push(`<span class="flag flag-injury">${parseInt(c.numberOfInjuries)} INJURY</span>`);
+        if(parseInt(c.numberOfDeaths)>0)   flags.push(`<span class="flag flag-death">${parseInt(c.numberOfDeaths)} FATALITY</span>`);
+        return `
+          <div class="item">
+            <div class="item-top">
+              <div class="item-id">${c.odiNumber?'ODI #'+esc(c.odiNumber):''} ${c.dateOfIncident?'· '+esc(c.dateOfIncident.split('T')[0]):''}</div>
+              <div class="item-flags">${flags.join('')}</div>
+            </div>
+            <div class="item-title">${esc(c.components||c.component)||'Component Unknown'}</div>
+            <div class="item-body">${esc(trunc(c.summary||c.description||'No narrative available.',350))}</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+    ${n>25?`<div style="font-family:var(--mono);font-size:.65rem;color:var(--faint);padding:.75rem 0">Showing 25 of ${n} complaints. Visit <a href="https://www.nhtsa.gov/vehicle-safety/complaints" target="_blank" style="color:var(--amber-lo)">NHTSA.gov</a> for full list.</div>`:''}
+    <div style="font-family:var(--mono);font-size:.58rem;color:var(--faint);margin-top:.5rem">Source: NHTSA ODI Vehicle Owner Complaint Database · Complaints are by make/model/year</div>
+  `;
+}
+
+// ─── HISTORY ─────────────────────────────────────────────────────────────────
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  if(!sessionHistory.length) {
+    list.innerHTML='<div class="state-msg">No lookups this session.</div>';
+    return;
+  }
+  list.innerHTML = [...sessionHistory].reverse().map(e=>`
+    <div class="history-item" onclick="loadVin('${esc(e.vin)}')">
+      <span class="h-vin">${esc(e.vin)}</span>
+      <span class="h-label">${esc(e.label)}</span>
+    </div>
+  `).join('');
+}
+
+function loadVin(vin) {
+  vinInput.value=vin;
+  vinInput.dispatchEvent(new Event('input'));
+  goBtn.click();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('clear-btn').addEventListener('click',()=>{
+  sessionHistory=[];
+  renderHistory();
+});
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function showErr(msg) { errEl.textContent=msg; errEl.style.display='block'; }
+
+// init
+renderHistory();
 </script>
-<p>Loading VinTool... if this persists, <a href="/">return home</a>.</p>
 </body>
 </html>
