@@ -7,6 +7,20 @@
   - crawulator/index.html
   - Newman_Library/index.html
 
+## [2026-07-14] UI overhaul phase 1 — "Lab chassis"
+- New css/chassis.css: shared sticky nav (.nl-nav — wordmark, // tool crumb, status
+  dot) and shared footer (.nl-footer) with the landing page's amber/mono identity.
+- All four pages now include the chassis; per-page nav/footer CSS + markup removed:
+  - index.html: fixed nav → chassis sticky nav; hero height now 100vh − nav.
+  - vintool.html: custom nav/footer → chassis (kept "5 data sources live" status
+    and the data-attribution line as .nl-note).
+  - crawulator: back-bar → full chassis nav; chassis footer added below the
+    "mud bugs" content footer. Page keeps its newspaper skin.
+  - Newman_Library: first-ever site nav (page previously had no way back home);
+    full-bleed negative margins compensate for the body clamp() padding.
+- Design rule going forward: chassis owns nav/footer/identity; each tool page
+  keeps its own body styling ("one shell, many skins").
+
 ## [2026-07-14] Full-repo audit + fixes
 - KEY FINDING: VinTool 2.0 (854 lines) was never committed — HEAD:vintool.html was a
   17-line redirect stub, so the live /vintool bounced users back to the homepage

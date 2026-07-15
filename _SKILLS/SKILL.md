@@ -76,6 +76,10 @@ NewmanLabs/
   .gitattributes      ← LF normalization (prevents CRLF phantom diffs)
   js/
     analytics.js      ← Shared GA4 config (G-9LTV8JBT7C), loaded with defer
+  css/
+    chassis.css       ← Shared site shell: .nl-nav sticky bar + .nl-footer,
+                         included by every page ("one shell, many skins" —
+                         pages keep their own body styling)
   crawulator/
     index.html        ← Crawfish Boil Calculator (3-tab: calc/cost/timeline)
   Newman_Library/

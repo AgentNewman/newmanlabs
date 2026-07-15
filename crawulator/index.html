@@ -8,6 +8,7 @@
 <script defer src="/js/analytics.js"></script>
 <title>Crawulator — Crawfish Boil Calculator | Newman Labs</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/css/chassis.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
@@ -46,24 +47,6 @@
   }
 
   body { background: var(--bg); color: var(--ink); font-family: 'Source Serif 4', Georgia, serif; min-height: 100vh; }
-
-  .back-bar {
-    background: #080A0C;
-    padding: 10px 1.5rem;
-    display: flex;
-    align-items: center;
-  }
-
-  .back-link {
-    font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    color: #F0A500;
-    text-decoration: none;
-    text-transform: uppercase;
-  }
-
-  .back-link:hover { color: #FFB820; }
 
   #app { max-width: 740px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
 
@@ -172,9 +155,17 @@
 </head>
 <body>
 
-<div class="back-bar">
-  <a href="/" class="back-link">← Newman Labs</a>
-</div>
+<nav class="nl-nav">
+  <div class="nl-nav-left">
+    <a href="/" class="nl-wordmark">Newman<span>Labs</span>.dev</a>
+    <span class="nl-pipe"></span>
+    <span class="nl-crumb">// Crawulator</span>
+  </div>
+  <div class="nl-status">
+    <span class="nl-dot"></span>
+    Louisiana tradition
+  </div>
+</nav>
 
 <div id="app">
   <div class="masthead">
@@ -277,6 +268,13 @@
 
   <footer>Made with love for the mud bugs &mdash; <a href="/" style="color:var(--craw-red);text-decoration:none;">Newman Labs</a></footer>
 </div>
+
+<footer class="nl-footer">
+  <div class="nl-footer-inner">
+    <div class="nl-copy">&copy; 2026 <span>Newman Labs</span> — newmanlabs.dev</div>
+    <div class="nl-loc">Albany, Louisiana</div>
+  </div>
+</footer>
 
 <script>
 const HEAT_LABELS=['Mild','Medium','Hot','Oh Lord','Cajun Tax'];

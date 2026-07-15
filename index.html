@@ -9,6 +9,7 @@
 <title>Newman Labs — Built in Louisiana. Deployed everywhere.</title>
 <meta name="description" content="Newman Labs — tools built by Stephen Newman. Self-taught enterprise automation architect out of Albany, Louisiana.">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/css/chassis.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
@@ -70,58 +71,10 @@
     opacity: 0.4;
   }
 
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 2.5rem;
-    height: 56px;
-    background: rgba(8,10,12,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav-wordmark {
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    color: var(--white);
-    text-decoration: none;
-    text-transform: uppercase;
-  }
-
-  .nav-wordmark span { color: var(--amber); }
-
-  .nav-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-  }
-
-  .status-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #3FB950;
-    animation: pulse 2.5s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
   .hero {
     position: relative;
     z-index: 1;
-    min-height: 100vh;
+    min-height: calc(100vh - 52px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -407,51 +360,29 @@
   .tool-link.disabled { color: var(--muted); pointer-events: none; }
   .arrow { font-size: 14px; }
 
-  footer {
-    position: relative;
-    z-index: 1;
-    border-top: 1px solid var(--border);
-    background: var(--ink);
-  }
-
-  .footer-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 2rem 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
-  .footer-copy span { color: var(--amber); }
-  .footer-loc { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
-
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
   @media (max-width: 640px) {
-    nav { padding: 0 1.25rem; }
     .hero { padding: 6rem 1.25rem 3rem; }
     .hero-headline { font-size: 2.4rem; }
     .stat-bar-inner { grid-template-columns: repeat(2, 1fr); padding: 0 1.25rem; }
     .stat { border-right: none; }
     .about-strip { grid-template-columns: 1fr; gap: 1rem; padding: 3rem 1.25rem; }
     .tools-section { padding: 3rem 1.25rem; }
-    .footer-inner { padding: 1.5rem 1.25rem; }
   }
 </style>
 </head>
 <body>
 
-<nav>
-  <a href="/" class="nav-wordmark">Newman<span>Labs</span>.dev</a>
-  <div class="nav-status">
-    <div class="status-dot"></div>
+<nav class="nl-nav">
+  <div class="nl-nav-left">
+    <a href="/" class="nl-wordmark">Newman<span>Labs</span>.dev</a>
+  </div>
+  <div class="nl-status">
+    <span class="nl-dot"></span>
     Systems operational
   </div>
 </nav>
@@ -565,10 +496,10 @@
   </div>
 </section>
 
-<footer>
-  <div class="footer-inner">
-    <div class="footer-copy">&copy; 2026 <span>Newman Labs</span> — newmanlabs.dev</div>
-    <div class="footer-loc">Albany, Louisiana</div>
+<footer class="nl-footer">
+  <div class="nl-footer-inner">
+    <div class="nl-copy">&copy; 2026 <span>Newman Labs</span> — newmanlabs.dev</div>
+    <div class="nl-loc">Albany, Louisiana</div>
   </div>
 </footer>
 

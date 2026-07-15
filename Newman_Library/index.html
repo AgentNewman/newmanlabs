@@ -8,6 +8,7 @@
 <script defer src="/js/analytics.js"></script>
   <title>Library of Velaris – Reading Dashboard</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/css/chassis.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;700&display=swap" rel="stylesheet" />
@@ -1114,6 +1115,15 @@
       }
     }
 
+    /* Chassis nav/footer full-bleed: body has clamp() padding, so pull the
+       shared bars out to the viewport edges. */
+    .nl-nav {
+      margin: calc(-1 * clamp(14px, 2vw, 28px)) calc(-1 * clamp(14px, 2vw, 28px)) clamp(14px, 2vw, 28px);
+    }
+    .nl-footer {
+      margin: clamp(14px, 2vw, 28px) calc(-1 * clamp(14px, 2vw, 28px)) calc(-1 * clamp(14px, 2vw, 28px));
+    }
+
     /* Respect reduced motion preferences */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -1125,6 +1135,17 @@
   </style>
 </head>
 <body>
+  <nav class="nl-nav">
+    <div class="nl-nav-left">
+      <a href="/" class="nl-wordmark">Newman<span>Labs</span>.dev</a>
+      <span class="nl-pipe"></span>
+      <span class="nl-crumb">// Library of Kellie Newman</span>
+    </div>
+    <div class="nl-status">
+      <span class="nl-dot"></span>
+      Goodreads shelf sync
+    </div>
+  </nav>
   <div class="page-wrap">
     <div class="app-shell is-loading" id="appShell">
       <header class="top-bar">
@@ -1427,6 +1448,13 @@
       </footer>
     </div>
   </div>
+
+  <footer class="nl-footer">
+    <div class="nl-footer-inner">
+      <div class="nl-copy">&copy; 2026 <span>Newman Labs</span> — newmanlabs.dev</div>
+      <div class="nl-loc">Albany, Louisiana</div>
+    </div>
+  </footer>
 
   <script>
     /*

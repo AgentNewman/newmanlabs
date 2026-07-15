@@ -8,6 +8,7 @@
 <script defer src="/js/analytics.js"></script>
 <title>VinTool 2.0 — Newman Labs</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/css/chassis.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Barlow:wght@300;400;500&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
@@ -50,23 +51,6 @@ body::after{content:'';position:fixed;inset:0;
 body::before{content:'';position:fixed;inset:0;
   background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.025) 2px,rgba(0,0,0,.025) 4px);
   pointer-events:none;z-index:9999}
-
-/* NAV */
-nav{
-  position:sticky;top:0;z-index:200;
-  background:rgba(8,8,8,.95);backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--border);
-  height:52px;padding:0 1.5rem;
-  display:flex;align-items:center;justify-content:space-between;gap:1rem
-}
-.nav-left{display:flex;align-items:center;gap:.75rem}
-.nav-logo{font-family:var(--mono);font-size:.72rem;color:var(--amber);letter-spacing:.08em}
-.nav-pipe{width:1px;height:16px;background:var(--border2)}
-.nav-tool{font-family:var(--cond);font-size:.95rem;font-weight:700;color:var(--dim);letter-spacing:.12em;text-transform:uppercase}
-.nav-ver{font-family:var(--mono);font-size:.6rem;color:var(--faint);letter-spacing:.05em}
-.nav-right{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.68rem;color:var(--dim)}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* MAIN */
 main{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:3rem 1.5rem 6rem}
@@ -287,18 +271,6 @@ main{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:3rem 1.5r
 .h-vin{font-family:var(--mono);font-size:.78rem;color:var(--amber);letter-spacing:.12em;flex-shrink:0}
 .h-label{font-family:var(--body);font-size:.8rem;color:var(--dim);text-align:right;font-weight:300}
 
-/* FOOTER */
-footer{
-  position:relative;z-index:1;
-  border-top:1px solid var(--border);
-  padding:1.25rem 1.5rem;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:1rem
-}
-.footer-l{font-family:var(--mono);font-size:.65rem;color:var(--faint)}
-.footer-l a{color:var(--amber-lo);text-decoration:none}
-.footer-r{font-family:var(--mono);font-size:.6rem;color:var(--fainter);letter-spacing:.04em}
-
 /* ANIM */
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .anim{animation:fadeUp .3s ease forwards}
@@ -310,23 +282,21 @@ footer{
   .counter{justify-content:flex-end;padding:.5rem 1rem;border-top:1px solid var(--border2)}
   .go-btn{padding:1rem;justify-content:center}
   .mpg-hero{grid-template-columns:1fr 1fr}
-  nav{padding:0 1rem}
   main{padding:2rem 1rem 5rem}
 }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-left">
-    <span class="nav-logo">NEWMAN_LABS</span>
-    <span class="nav-pipe"></span>
-    <span class="nav-tool">VinTool</span>
-    <span class="nav-ver">v2.0</span>
+<nav class="nl-nav">
+  <div class="nl-nav-left">
+    <a href="/" class="nl-wordmark">Newman<span>Labs</span>.dev</a>
+    <span class="nl-pipe"></span>
+    <span class="nl-crumb">// VinTool v2.0</span>
   </div>
-  <div class="nav-right">
-    <span class="live-dot"></span>
-    5 DATA SOURCES LIVE
+  <div class="nl-status">
+    <span class="nl-dot"></span>
+    5 data sources live
   </div>
 </nav>
 
@@ -419,9 +389,12 @@ footer{
 
 </main>
 
-<footer>
-  <div class="footer-l"><a href="https://newmanlabs.dev">Newman Labs</a> · Albany, Louisiana</div>
-  <div class="footer-r">Data: NHTSA vPIC · NHTSA ODI · EPA FuelEconomy.gov · All public government APIs · No data stored server-side</div>
+<footer class="nl-footer">
+  <div class="nl-footer-inner">
+    <div class="nl-copy">&copy; 2026 <span>Newman Labs</span> — newmanlabs.dev</div>
+    <div class="nl-loc">Albany, Louisiana</div>
+    <div class="nl-note">Data: NHTSA vPIC · NHTSA ODI · EPA FuelEconomy.gov · All public government APIs · No data stored server-side</div>
+  </div>
 </footer>
 
 <script>
