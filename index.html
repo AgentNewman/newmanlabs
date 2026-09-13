@@ -6,179 +6,232 @@
 <!-- Google Analytics 4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9LTV8JBT7C"></script>
 <script defer src="/js/analytics.js"></script>
-<title>Newman Labs — Built in Louisiana. Deployed everywhere.</title>
+<title>Newman Labs // OS v2.0</title>
 <meta name="description" content="Newman Labs — tools built by Stephen Newman. Self-taught enterprise automation architect out of Albany, Louisiana.">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="stylesheet" href="/css/chassis.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --black:    #080A0C;
-    --ink:      #0D1117;
-    --surface:  #131920;
-    --rail:     #1C2530;
-    --border:   rgba(255,255,255,0.07);
-    --border-hi:rgba(255,255,255,0.14);
-    --amber:    #F0A500;
-    --amber-dim:#A87200;
-    --amber-glow:rgba(240,165,0,0.12);
-    --white:    #F0EDE8;
-    --muted:    #6B7888;
-    --mono:     'IBM Plex Mono', monospace;
-    --sans:     'IBM Plex Sans', sans-serif;
+    --bg-base:      #050508;
+    --panel-bg:     #0c0f16;
+    --neon-cyan:    #00f0ff;
+    --neon-pink:    #ff003c;
+    --warning-yellow: #fce803;
+    --grid-line:    rgba(0, 240, 255, 0.1);
+    --mono:         'Share Tech Mono', monospace;
+    --mech:         'Orbitron', sans-serif;
   }
 
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--black);
-    color: var(--white);
-    font-family: var(--sans);
+    background: var(--bg-base);
+    color: var(--neon-cyan);
+    font-family: var(--mono);
     font-size: 16px;
     line-height: 1.6;
     overflow-x: hidden;
   }
 
+  /* CRT Scanline & Grid Effects */
   body::before {
     content: '';
     position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.03) 2px,
-      rgba(0,0,0,0.03) 4px
-    );
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 2px, 3px 100%;
+    z-index: 9999;
     pointer-events: none;
-    z-index: 1000;
   }
 
   body::after {
     content: '';
     position: fixed;
     inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 48px 48px;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
+    background-image: 
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: -1;
+    transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+    animation: gridMove 10s linear infinite;
   }
 
+  @keyframes gridMove {
+    0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); }
+    100% { transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px); }
+  }
+
+  /* Boot Screen Overlay */
+  #boot-sequence {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-base);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    font-family: var(--mono);
+    color: var(--warning-yellow);
+    text-shadow: 0 0 5px var(--warning-yellow);
+  }
+
+  .boot-line {
+    opacity: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Main Nav */
+  .nl-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5rem 2.5rem;
+    border-bottom: 2px solid var(--neon-cyan);
+    background: rgba(12, 15, 22, 0.8);
+    backdrop-filter: blur(5px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nl-wordmark {
+    font-family: var(--mech);
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px var(--neon-cyan);
+  }
+
+  .nl-wordmark span {
+    color: var(--neon-cyan);
+  }
+
+  .nl-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+  }
+
+  .nl-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--neon-pink);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--neon-pink);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Hero Section */
   .hero {
-    position: relative;
-    z-index: 1;
-    min-height: calc(100vh - 52px);
+    min-height: 80vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 7rem 2.5rem 4rem;
+    padding: 4rem 2.5rem;
     max-width: 1100px;
     margin: 0 auto;
+    position: relative;
   }
 
   .hero-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    color: var(--amber);
+    font-size: 1rem;
+    color: var(--warning-yellow);
+    margin-bottom: 1rem;
     text-transform: uppercase;
-    margin-bottom: 1.5rem;
-    opacity: 0;
-    animation: fadeUp 0.6s ease 0.2s forwards;
+    display: inline-block;
+    border-left: 4px solid var(--warning-yellow);
+    padding-left: 10px;
   }
-
-  .hero-label::before { content: '// '; color: var(--amber-dim); }
 
   .hero-headline {
-    font-family: var(--mono);
-    font-size: clamp(2.8rem, 6vw, 5.5rem);
-    font-weight: 600;
-    line-height: 1.0;
-    letter-spacing: -0.02em;
-    color: var(--white);
-    margin-bottom: 1.5rem;
-    opacity: 0;
-    animation: fadeUp 0.6s ease 0.35s forwards;
+    font-family: var(--mech);
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 1.1;
+    color: #fff;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 0px var(--neon-pink), -2px -2px 0px var(--neon-cyan);
   }
 
-  .hero-headline .accent { color: var(--amber); }
+  .hero-headline .accent {
+    color: var(--neon-cyan);
+    -webkit-text-stroke: 1px var(--neon-cyan);
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+  }
 
   .hero-sub {
-    font-family: var(--sans);
-    font-size: clamp(1rem, 2vw, 1.2rem);
-    font-weight: 300;
-    color: var(--muted);
-    max-width: 520px;
-    line-height: 1.7;
+    font-size: 1.2rem;
+    color: #a0aabf;
+    max-width: 600px;
     margin-bottom: 3rem;
-    opacity: 0;
-    animation: fadeUp 0.6s ease 0.5s forwards;
+    border-left: 2px dashed #333;
+    padding-left: 1rem;
   }
 
-  .hero-sub strong { color: var(--white); font-weight: 400; }
+  .hero-sub strong { color: var(--neon-cyan); }
 
-  .hero-cta {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    opacity: 0;
-    animation: fadeUp 0.6s ease 0.65s forwards;
+  /* Mech Buttons */
+  .hero-cta { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+  .btn-primary, .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 30px;
+    font-family: var(--mech);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s;
+    /* Angled Mech corners */
+    clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
   }
 
   .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 11px 24px;
-    background: var(--amber);
-    color: var(--black);
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.15s;
+    background: var(--neon-cyan);
+    color: var(--bg-base);
+    box-shadow: 0 0 15px rgba(0,240,255,0.4);
   }
 
-  .btn-primary:hover { background: #FFB820; transform: translateY(-1px); }
+  .btn-primary:hover {
+    background: #fff;
+    box-shadow: 0 0 25px var(--neon-cyan);
+  }
 
   .btn-ghost {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 24px;
-    background: transparent;
-    color: var(--muted);
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-decoration: none;
-    border: 1px solid var(--border-hi);
-    cursor: pointer;
-    transition: all 0.15s;
+    background: var(--panel-bg);
+    color: var(--neon-pink);
+    border: 1px solid var(--neon-pink); /* Fallback for clip-path borders */
   }
 
-  .btn-ghost:hover { border-color: var(--amber-dim); color: var(--amber); }
+  .btn-ghost:hover {
+    background: var(--neon-pink);
+    color: #fff;
+    box-shadow: 0 0 25px rgba(255,0,60,0.6);
+  }
 
+  /* Stats Bar - Warning Tape Style */
   .stat-bar {
-    position: relative;
-    z-index: 1;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    overflow: hidden;
+    background: repeating-linear-gradient(45deg, #111, #111 10px, #000 10px, #000 20px);
+    border-top: 2px solid var(--warning-yellow);
+    border-bottom: 2px solid var(--warning-yellow);
+    padding: 2rem 0;
   }
 
   .stat-bar-inner {
@@ -186,196 +239,157 @@
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    padding: 0 2.5rem;
+    text-align: center;
   }
 
-  .stat { padding: 1.5rem 2rem; border-right: 1px solid var(--border); }
-  .stat:first-child { padding-left: 0; }
-  .stat:last-child { border-right: none; }
-
   .stat-num {
-    font-family: var(--mono);
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: var(--amber);
-    line-height: 1;
-    margin-bottom: 4px;
+    font-family: var(--mech);
+    font-size: 2.5rem;
+    color: var(--warning-yellow);
+    text-shadow: 0 0 10px rgba(252,232,3,0.3);
   }
 
   .stat-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: #fff;
   }
 
-  .about-strip {
-    position: relative;
-    z-index: 1;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 5rem 2.5rem;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 4rem;
-    align-items: start;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .about-tag {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--amber);
-    padding-top: 4px;
-  }
-
-  .about-tag::before { content: '[ '; }
-  .about-tag::after { content: ' ]'; }
-
-  .about-body {
-    font-size: 1.05rem;
-    font-weight: 300;
-    color: rgba(240,237,232,0.75);
-    line-height: 1.8;
-  }
-
-  .about-body strong { color: var(--white); font-weight: 400; }
-
+  /* Tools Section */
   .tools-section {
-    position: relative;
-    z-index: 1;
     max-width: 1100px;
-    margin: 0 auto;
-    padding: 5rem 2.5rem;
+    margin: 5rem auto;
+    padding: 0 2.5rem;
+    perspective: 1000px;
   }
 
   .section-header {
     display: flex;
-    align-items: baseline;
     justify-content: space-between;
-    margin-bottom: 2.5rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 2px solid var(--neon-pink);
     padding-bottom: 1rem;
+    margin-bottom: 3rem;
   }
 
   .section-title {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.2em;
+    font-family: var(--mech);
+    font-size: 1.5rem;
+    color: var(--neon-pink);
     text-transform: uppercase;
-    color: var(--amber);
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255,0,60,0.4);
   }
 
-  .section-title::before { content: '// '; color: var(--amber-dim); }
-  .section-count { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .section-title::before { content: '>> '; }
 
   .tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
   }
 
+  /* 3D Interactive Cards */
   .tool-card {
-    background: var(--ink);
-    padding: 1.75rem;
-    position: relative;
-    transition: background 0.2s;
+    background: var(--panel-bg);
+    padding: 2rem;
+    border: 1px solid rgba(0,240,255,0.2);
     display: flex;
     flex-direction: column;
+    /* Angled corners */
+    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+    transition: transform 0.1s ease, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
   }
 
-  .tool-card:hover { background: var(--surface); }
+  .tool-card:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: inset 0 0 20px rgba(0,240,255,0.1), 0 10px 30px rgba(0,0,0,0.8);
+  }
 
-  .tool-card.live::before, .tool-card.soon::before {
+  .tool-card::before {
     content: '';
     position: absolute;
-    top: 0; left: 0;
-    width: 3px;
-    height: 100%;
+    top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--neon-cyan);
+    box-shadow: 0 0 10px var(--neon-cyan);
   }
-
-  .tool-card.live::before { background: var(--amber); }
-  .tool-card.soon::before { background: var(--rail); }
 
   .tool-status {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.14em;
+    color: var(--neon-cyan);
+    font-size: 0.8rem;
     text-transform: uppercase;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+    transform: translateZ(20px);
   }
 
-  .tool-status.live { color: #3FB950; }
-  .tool-status.soon { color: var(--muted); }
-
   .tool-name {
-    font-family: var(--mono);
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: var(--white);
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.01em;
+    font-family: var(--mech);
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 1rem;
+    transform: translateZ(30px);
   }
 
   .tool-desc {
-    font-size: 13px;
-    font-weight: 300;
-    color: var(--muted);
-    line-height: 1.6;
-    flex: 1;
+    color: #8892b0;
+    font-size: 0.95rem;
     margin-bottom: 1.5rem;
+    flex-grow: 1;
+    transform: translateZ(20px);
   }
 
-  .tool-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.25rem; }
+  .tool-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+    transform: translateZ(25px);
+  }
 
   .tag {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    background: var(--rail);
-    padding: 2px 8px;
-    border: 1px solid var(--border);
+    background: rgba(0, 240, 255, 0.1);
+    color: var(--neon-cyan);
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    border: 1px solid var(--neon-cyan);
   }
 
   .tool-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--amber);
+    color: var(--warning-yellow);
     text-decoration: none;
-    transition: gap 0.15s;
+    text-transform: uppercase;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transform: translateZ(20px);
   }
+  .tool-link:hover { text-shadow: 0 0 8px var(--warning-yellow); }
 
-  .tool-link:hover { gap: 10px; }
-  .tool-link.disabled { color: var(--muted); pointer-events: none; }
-  .arrow { font-size: 14px; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @media (max-width: 640px) {
-    .hero { padding: 6rem 1.25rem 3rem; }
-    .hero-headline { font-size: 2.4rem; }
-    .stat-bar-inner { grid-template-columns: repeat(2, 1fr); padding: 0 1.25rem; }
-    .stat { border-right: none; }
-    .about-strip { grid-template-columns: 1fr; gap: 1rem; padding: 3rem 1.25rem; }
-    .tools-section { padding: 3rem 1.25rem; }
+  /* Footer */
+  .nl-footer {
+    border-top: 1px solid #333;
+    padding: 2rem 2.5rem;
+    text-align: center;
+    color: #555;
+    margin-top: 5rem;
   }
 </style>
 </head>
 <body>
+
+<!-- Simulated OS Boot Sequence -->
+<div id="boot-sequence">
+  <p class="boot-line" style="animation: fade 0.1s forwards 0.2s;">> POWER ON SELF TEST...</p>
+  <p class="boot-line" style="animation: fade 0.1s forwards 0.6s;">> INITIATING NX-13 MAINFRAME...</p>
+  <p class="boot-line" style="animation: fade 0.1s forwards 1.0s;">> BB-13 CO-PROCESSOR ONLINE.</p>
+  <p class="boot-line" style="animation: fade 0.1s forwards 1.4s;">> ENGAGING FARRAH NEURAL NET...</p>
+  <p class="boot-line" style="animation: fade 0.1s forwards 1.8s;">> OPNsense UPLINK ESTABLISHED. 10GbE ACTIVE.</p>
+  <p class="boot-line" style="animation: fade 0.1s forwards 2.2s; color: var(--neon-cyan);">> SYSTEM READY. LAUNCHING UI_MATRIX...</p>
+</div>
 
 <nav class="nl-nav">
   <div class="nl-nav-left">
@@ -388,149 +402,135 @@
 </nav>
 
 <section class="hero">
-  <div class="hero-label">Albany, Louisiana — Est. 2023</div>
+  <div class="hero-label">SYS_LOC: Albany, Louisiana</div>
   <h1 class="hero-headline">
     Tools built<br>
     for people<br>
     who <span class="accent">get it done.</span>
   </h1>
   <p class="hero-sub">
-    <strong>Newman Labs</strong> is a one-person operation run by Stephen Newman —
-    self-taught enterprise automation architect, builder of things that actually work,
-    based in South Louisiana.
+    <strong>Newman Labs</strong> is a one-person operation run by Stephen Newman — 
+    self-taught enterprise automation architect, builder of things that actually work.
   </p>
   <div class="hero-cta">
-    <a href="#tools" class="btn-primary">View the tools <span class="arrow">→</span></a>
-    <a href="https://github.com/AgentNewman" target="_blank" rel="noopener noreferrer" class="btn-ghost">GitHub <span class="arrow">↗</span></a>
+    <a href="#tools" class="btn-primary">Initialize Tools <span class="arrow">↓</span></a>
+    <a href="https://github.com/AgentNewman" target="_blank" class="btn-ghost">Access GitHub_Node <span class="arrow">↗</span></a>
   </div>
 </section>
 
 <div class="stat-bar">
   <div class="stat-bar-inner">
-    <div class="stat"><div class="stat-num">8+</div><div class="stat-label">Production apps</div></div>
-    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Years building</div></div>
-    <div class="stat"><div class="stat-num">0</div><div class="stat-label">CS degrees</div></div>
-    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Problems to solve</div></div>
+    <div class="stat"><div class="stat-num">8+</div><div class="stat-label">Prod_Apps</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Yrs_Active</div></div>
+    <div class="stat"><div class="stat-num">0</div><div class="stat-label">CS_Degrees</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Objectives</div></div>
   </div>
-</div>
-
-<div class="about-strip">
-  <div class="about-tag">About the lab</div>
-  <p class="about-body">
-    Started coding in 2023 when I volunteered to solve a problem when no other support was available.
-    Since then: <strong>eight production enterprise apps</strong>, integrations across Quickbase,
-    Snowflake, Salesforce, and Power BI, and a growing collection of personal tools built
-    because the right tool didn't exist yet. Newman Labs is where those tools live.
-    <br><br>
-    <strong>Everything here is built to be used — not just admired.</strong>
-  </p>
 </div>
 
 <section class="tools-section" id="tools">
   <div class="section-header">
-    <div class="section-title">Deployed tools</div>
-    <div class="section-count">3 live — more incoming</div>
+    <div class="section-title">Deployed Assets</div>
   </div>
   <div class="tools-grid">
 
-    <div class="tool-card live">
-      <div class="tool-status live">● Live</div>
+    <div class="tool-card">
+      <div class="tool-status">● Live</div>
       <div class="tool-name">Crawulator</div>
-      <p class="tool-desc">The only crawfish boil calculator you'll ever need. Guest count, eater type, heat level, full shopping list, cost estimator, and the Sharpie Crawfish Recipe - a step-by-step guide by Ryan Sharp.</p>
+      <p class="tool-desc">The ultimate crawfish boil calculator. Guest count, eater type, heat level, shopping list, cost estimator, and the Sharpie Crawfish Recipe.</p>
       <div class="tool-tags">
         <span class="tag">HTML</span>
         <span class="tag">Vanilla JS</span>
         <span class="tag">Louisiana</span>
       </div>
-      <a href="/crawulator" class="tool-link">Launch tool <span class="arrow">→</span></a>
+      <a href="/crawulator" class="tool-link">Execute Program <span>→</span></a>
     </div>
 
-    <div class="tool-card live">
-      <div class="tool-status live">● Live</div>
+    <div class="tool-card">
+      <div class="tool-status">● Live</div>
       <div class="tool-name">VinTool</div>
-      <p class="tool-desc">Decode any VIN instantly — free, no account, no ads. Full specs, EPA fuel economy, NCAP safety star ratings, open recalls, and real owner complaint narratives. Five official government data sources, one clean interface.</p>
+      <p class="tool-desc">Decode any VIN instantly. Full specs, EPA fuel economy, NCAP safety star ratings, open recalls, and real owner complaint narratives.</p>
       <div class="tool-tags">
         <span class="tag">HTML</span>
         <span class="tag">Vanilla JS</span>
         <span class="tag">NHTSA API</span>
-        <span class="tag">EPA API</span>
       </div>
-      <a href="/vintool" class="tool-link">Launch tool <span class="arrow">→</span></a>
+      <a href="/vintool" class="tool-link">Execute Program <span>→</span></a>
     </div>
 
-    <div class="tool-card live">
-      <div class="tool-status live">● Live</div>
+    <div class="tool-card">
+      <div class="tool-status">● Live</div>
       <div class="tool-name">DeepDrive</div>
-      <p class="tool-desc">Stop guessing what's eating your disk. DeepDrive visualizes your local filesystem and iCloud Drive so you can find the bloat, reclaim the space, and move on. Desktop app — download and run, no setup required.</p>
+      <p class="tool-desc">Stop guessing what's eating your disk. Visualizes your local filesystem and iCloud Drive so you can find bloat and reclaim space.</p>
       <div class="tool-tags">
         <span class="tag">Electron</span>
         <span class="tag">Node.js</span>
-        <span class="tag">v0.1.3</span>
         <span class="tag">Desktop</span>
       </div>
-      <a href="https://github.com/AgentNewman/DeepDrive/releases" target="_blank" rel="noopener noreferrer" class="tool-link">Download v0.1.3 <span class="arrow">↗</span></a>
+      <a href="https://github.com/AgentNewman/DeepDrive/releases" target="_blank" rel="noopener noreferrer" class="tool-link">Download v0.1.3 <span>↗</span></a>
     </div>
 
   </div>
 </section>
 
-<section class="tools-section" id="personal" style="padding-top:0">
+<section class="tools-section" id="personal">
   <div class="section-header">
-    <div class="section-title">Personal projects</div>
-    <div class="section-count">built for people I love</div>
+    <div class="section-title" style="color:var(--warning-yellow); text-shadow:0 0 10px rgba(252,232,3,0.4);">Restricted Access // Personal</div>
   </div>
-  <div class="tools-grid" style="grid-template-columns: minmax(300px, 480px)">
-
-    <div class="tool-card live">
-      <div class="tool-status live">● Live</div>
+  <div class="tools-grid">
+    <div class="tool-card" style="border-left-color:var(--warning-yellow);">
+      <div class="tool-status" style="color:var(--warning-yellow);">● Active Link</div>
       <div class="tool-name">Library of Kellie Newman</div>
-      <p class="tool-desc">A Goodreads reading dashboard built for Kellie. Tracks books read, favorite authors, and reading streaks — fed by a live CSV pipeline from Goodreads exports.</p>
+      <p class="tool-desc">A Goodreads reading dashboard. Tracks books read, favorite authors, and reading streaks — fed by a live CSV pipeline.</p>
       <div class="tool-tags">
-        <span class="tag">Dashboard</span>
-        <span class="tag">CSV pipeline</span>
-        <span class="tag">Goodreads</span>
+        <span class="tag" style="border-color:var(--warning-yellow); color:var(--warning-yellow);">Dashboard</span>
+        <span class="tag" style="border-color:var(--warning-yellow); color:var(--warning-yellow);">CSV Pipeline</span>
       </div>
-      <a href="/Newman_Library" class="tool-link">Launch Library <span class="arrow">→</span></a>
+      <a href="/Newman_Library" class="tool-link">Access Terminal <span>→</span></a>
     </div>
-
   </div>
 </section>
 
 <footer class="nl-footer">
-  <div class="nl-footer-inner">
-    <div class="nl-copy">&copy; 2026 <span>Newman Labs</span> — newmanlabs.dev</div>
-    <div class="nl-loc">Albany, Louisiana</div>
-  </div>
+  &copy; 2026 Newman Labs // End of Transmission.
 </footer>
 
 <script>
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
-    });
+  // Boot Sequence Logic
+  window.addEventListener('load', () => {
+    const bootScreen = document.getElementById('boot-sequence');
+    setTimeout(() => {
+      bootScreen.style.transition = 'opacity 0.5s';
+      bootScreen.style.opacity = '0';
+      setTimeout(() => bootScreen.remove(), 500);
+    }, 2800);
   });
 
+  // 3D Card Tilt Physics
   const cards = document.querySelectorAll('.tool-card');
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }, i * 80);
-        obs.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-
   cards.forEach(card => {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(20px)';
-    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease, background 0.2s';
-    obs.observe(card);
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -10;
+      const rotateY = ((x - centerX) / centerX) * 10;
+      
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    });
+    
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+    });
   });
 </script>
+
+<style>
+  @keyframes fade { to { opacity: 1; } }
+</style>
 
 </body>
 </html>
