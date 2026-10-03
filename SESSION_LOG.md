@@ -61,3 +61,8 @@
 - js/analytics.js content confirmed correct (gtag config only, no inline HTML)
 - Pushed clean merge commit: 574f38d..2bfffc2 → origin/main
 - Repo state: local main == origin/main, all GA4 tracking live
+
+## [2026-10-03] Landing page accessibility and layout fixes
+- Updated index.html: optional boot effect with a no-JavaScript fallback and input dismissal; pause control and reduced-motion handling; responsive navigation, stats, and tool grid; sticky-nav anchor offset; text contrast; semantic headings and main landmark; clipped card backgrounds separated from 3D content; fade keyframes moved into the head.
+- Preserved the existing DeepDrive page and release links. No commit or push performed.
+- Validation: Node syntax and DOM-fixture behavior checks, local-link checks, HTML structure checks, and CSS contrast calculations. Browser rendering remains untested.
