@@ -66,3 +66,9 @@
 - Updated index.html: optional boot effect with a no-JavaScript fallback and input dismissal; pause control and reduced-motion handling; responsive navigation, stats, and tool grid; sticky-nav anchor offset; text contrast; semantic headings and main landmark; clipped card backgrounds separated from 3D content; fade keyframes moved into the head.
 - Preserved the existing DeepDrive page and release links. No commit or push performed.
 - Validation: Node syntax and DOM-fixture behavior checks, local-link checks, HTML structure checks, and CSS contrast calculations. Browser rendering remains untested.
+
+## [2026-10-03] Homepage fixes committed and pushed
+- Pushed cdc7583 (Fix homepage accessibility and responsive layout) to origin/main with Stephen's authorization.
+- Linux Git had no credential helper; the push succeeded using Windows Git's existing authentication.
+- Excluded the pre-existing DeepDrive homepage link edit, vintool.html edits, and untracked deepdrive.html and vintool.backup.html. All remain intact locally.
+- Confirmed HEAD matched origin/main after the push. Live GitHub Pages deployment was not verified.
