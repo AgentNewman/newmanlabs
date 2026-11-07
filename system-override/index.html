@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070b12">
+<meta name="description" content="A classified, interactive Newman Labs system transmission. Unofficial sci-fi dungeon-crawling fan tribute.">
+<title>System Override // Newman Labs</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #060911; --panel: #101722; --panel2: #0b111d; --line: #29374b;
+    --cyan: #55f2f4; --gold: #ffcd62; --red: #ff5474; --green: #92f3c1;
+    --ink: #e9f2ff; --muted: #9bacbf; --mono: "Share Tech Mono", ui-monospace, Consolas, monospace;
+    --display: "Orbitron", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 var(--mono); overflow-x: hidden; }
+  body::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -2; background:
+    radial-gradient(ellipse at 78% 6%, rgba(21,132,154,.19), transparent 45%),
+    radial-gradient(ellipse at 10% 80%, rgba(255,84,116,.075), transparent 42%),
+    linear-gradient(rgba(85,242,244,.036) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(85,242,244,.036) 1px, transparent 1px);
+    background-size: auto,auto,44px 44px,44px 44px;
+  }
+  body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: .17; background: repeating-linear-gradient(to bottom, transparent 0 3px, rgba(0,0,0,.2) 3px 4px); }
+  a { color: var(--cyan); }
+  button, input { font: inherit; }
+  button { cursor: pointer; }
+  button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+  .wrap { width: min(1180px, calc(100% - 44px)); margin: auto; }
+  .top { border-bottom: 1px solid var(--line); background: rgba(6,9,17,.9); backdrop-filter: blur(14px); position: sticky; top: 0; z-index: 20; }
+  .top-inner { display: flex; align-items: center; justify-content: space-between; min-height: 68px; gap: 20px; }
+  .logo { font-family: var(--display); color: #fff; letter-spacing: .05em; text-decoration: none; text-transform: uppercase; font-weight: 800; font-size: 13px; }
+  .logo span { color: var(--cyan); }
+  .top-links { display: flex; align-items: center; flex-wrap: wrap; gap: 22px; }
+  .top-links a { text-decoration: none; color: var(--muted); font-size: 12px; letter-spacing: .1em; }
+  .top-links a:hover { color: var(--cyan); }
+  .signal { display: inline-flex; align-items: center; gap: 8px; color: var(--green); font-size: 12px; letter-spacing: .1em; }
+  .signal::before { content: ""; display: block; background: var(--green); width: 7px; height: 7px; border-radius: 50%; box-shadow: 0 0 14px var(--green); animation: pulse 2s ease-in-out infinite; }
+  .eyebrow { color: var(--gold); font-size: 12px; letter-spacing: .22em; font-weight: bold; text-transform: uppercase; }
+  .hero { padding: 84px 0 64px; display: grid; grid-template-columns: minmax(0,1.6fr) minmax(300px,.8fr); align-items: center; gap: 48px; }
+  .hero h1 { font-family: var(--display); text-transform: uppercase; font-size: clamp(45px, 7vw, 99px); line-height: 1.05; margin: 20px 0 24px; letter-spacing: -.065em; text-wrap: balance; }
+  .hero h1 em { font-style: normal; color: var(--cyan); text-shadow: 0 0 55px rgba(85,242,244,.24); }
+  .hero p { max-width: 650px; color: var(--muted); font-size: 19px; }
+  .cursor { display: inline-block; width: .12em; height: .85em; background: var(--red); margin-left: .08em; vertical-align: baseline; animation: blink 1s steps(2,end) infinite; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .btn { border: 1px solid var(--cyan); border-radius: 3px; background: transparent; color: var(--cyan); padding: 12px 18px; text-decoration: none; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; font-weight: bold; transition: background .2s, transform .2s; }
+  .btn:hover { background: rgba(85,242,244,.12); transform: translateY(-2px); }
+  .btn-primary { color: #03131a; background: var(--cyan); }
+  .btn-primary:hover { background: #b5ffff; }
+  .btn-gold { border-color: var(--gold); color: var(--gold); }
+  .btn-gold:hover { background: rgba(255,205,98,.10); }
+  .glass { background: linear-gradient(150deg, rgba(19,32,48,.92),rgba(9,15,25,.95)); border: 1px solid var(--line); box-shadow: 0 18px 60px rgba(0,0,0,.22); border-radius: 7px; }
+  .status-card { padding: 26px; position: relative; }
+  .status-card::before { content: ""; position: absolute; top: -1px; left: 22px; right: 35%; height: 2px; background: var(--cyan); box-shadow: 0 0 20px var(--cyan); }
+  .status-header { display: flex; gap: 12px; align-items: center; justify-content: space-between; color: var(--muted); font-size: 12px; letter-spacing: .1em; }
+  .status-big { font: 800 44px var(--display); color: var(--green); margin: 22px 0 8px; }
+  .status-sub { font-size: 13px; color: var(--muted); margin-bottom: 26px; }
+  .meters { display: grid; gap: 17px; }
+  .meter-label { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; margin-bottom: 7px; }
+  .meter-track { height: 5px; background: #233244; overflow: hidden; }
+  .meter-fill { height: 100%; background: var(--cyan); box-shadow: 0 0 16px var(--cyan); }
+  .section { padding: 58px 0; }
+  .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; border-bottom: 1px solid var(--line); padding-bottom: 15px; margin-bottom: 27px; }
+  h2 { font: 800 clamp(22px,3vw,31px)/1.2 var(--display); text-transform: uppercase; margin: 0; letter-spacing: -.03em; }
+  .section-heading p { margin: 0; color: var(--muted); font-size: 13px; }
+  .grid-two { display: grid; grid-template-columns: 1.2fr .8fr; gap: 20px; }
+  .terminal { overflow: hidden; }
+  .terminal-head { padding: 13px 17px; background: #172334; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+  .dots { display: inline-flex; gap: 6px; margin-right: 10px; vertical-align: middle; }
+  .dots i { width: 8px; height: 8px; border-radius: 100%; background: var(--red); }
+  .dots i:nth-child(2) { background: var(--gold); } .dots i:nth-child(3) { background: var(--green); }
+  #terminal-output { height: 346px; overflow-y: auto; padding: 20px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.75; scrollbar-color: #426078 transparent; }
+  .line { margin-bottom: 8px; }
+  .line.system { color: var(--cyan); } .line.warning { color: var(--red); }
+  .line.reward { color: var(--gold); } .line.command { color: #d6edff; }
+  .line.normal { color: var(--muted); }
+  .terminal-form { display: flex; padding: 10px 14px; border-top: 1px solid var(--line); align-items: center; gap: 9px; }
+  .prompt { color: var(--green); font-size: 15px; }
+  .terminal-form input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--ink); outline: none; font-size: 16px; padding: 8px 0; }
+  .terminal-form button { padding: 8px 14px; }
+  .side-panel { padding: 24px; display: flex; flex-direction: column; gap: 13px; }
+  .side-panel h3 { font: 800 17px var(--display); margin: 0 0 4px; color: var(--gold); }
+  .side-panel p { margin: 0; color: var(--muted); font-size: 14px; }
+  .quick-commands { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-size: 12px; background: #142030; border: 1px solid #32465b; border-radius: 2px; color: #b9d8e7; padding: 6px 11px; }
+  .chip:hover { color: var(--cyan); border-color: var(--cyan); }
+  .notice { border-left: 2px solid var(--red); padding: 12px; background: rgba(255,84,116,.06); margin-top: auto; }
+  .notice strong { color: var(--red); font-size: 13px; }
+  .notice p { margin-top: 8px; }
+  .achievements { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+  .achievement { padding: 19px; min-height: 178px; transition: border-color .2s,transform .2s; }
+  .achievement.unlocked { border-color: rgba(255,205,98,.45); background: linear-gradient(130deg,rgba(255,205,98,.085),rgba(14,21,31,.97)); }
+  .achievement:hover { transform: translateY(-2px); }
+  .achievement .icon { font-size: 25px; color: var(--gold); line-height: 1; margin-bottom: 16px; }
+  .achievement:not(.unlocked) .icon { color: #566274; }
+  .achievement h3 { font: 700 12px/1.5 var(--display); color: var(--ink); letter-spacing: .02em; margin: 0 0 9px; }
+  .achievement p { font-size: 12px; color: var(--muted); margin: 0; }
+  .achievement .state { font-size: 10px; letter-spacing: .1em; margin-top: 15px; color: #74889b; text-transform: uppercase; }
+  .achievement.unlocked .state { color: var(--gold); }
+  .treaty { display: grid; grid-template-columns: .75fr 1.25fr; gap: 24px; align-items: start; }
+  .treaty-lead { padding: 28px; border-top: 2px solid var(--gold); }
+  .treaty-lead h3 { font: 800 21px/1.4 var(--display); margin: 10px 0 14px; }
+  .treaty-lead p { color: var(--muted); font-size: 15px; }
+  .article-list { display: grid; gap: 10px; }
+  .article { display: grid; grid-template-columns: 50px 1fr; gap: 10px; padding: 18px; }
+  .article span { color: var(--gold); font: 800 16px var(--display); }
+  .article strong { font-size: 15px; color: var(--ink); }
+  .article p { color: var(--muted); font-size: 14px; margin: 5px 0 0; }
+  .choice { padding: 26px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 25px; border-color: #4d4532; }
+  .choice h3 { font: 800 18px/1.5 var(--display); margin: 6px 0 9px; color: var(--gold); }
+  .choice p { margin: 0; color: var(--muted); font-size: 15px; }
+  .choice-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+  .choice-response { font-size: 14px; color: var(--green); margin-top: 13px; min-height: 1.5em; }
+  .foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 30px 0 55px; border-top: 1px solid var(--line); color: #8296ab; font-size: 12px; }
+  .foot p { margin: 0; }
+  .foot a { color: var(--muted); }
+  .toast { position: fixed; right: 22px; bottom: 22px; width: min(380px,calc(100vw - 44px)); padding: 19px 23px; z-index: 100; background: #1d1a13; border: 1px solid var(--gold); box-shadow: 0 20px 60px rgba(0,0,0,.5),0 0 28px rgba(255,205,98,.13); transform: translateY(25px); opacity: 0; pointer-events: none; transition: opacity .25s,transform .25s; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast strong { font-family: var(--display); font-size: 13px; color: var(--gold); }
+  .toast p { margin: 7px 0 0; color: var(--ink); font-size: 14px; }
+  .sr-only { position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+  @keyframes pulse { 50% { opacity: .3; } }
+  @keyframes blink { 50% { opacity: 0; } }
+  @media(max-width:850px) {
+    .hero,.grid-two,.treaty { grid-template-columns: 1fr; }
+    .hero { padding-top: 58px; gap: 20px; } .status-card { max-width: 600px; }
+    .achievements { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .choice { grid-template-columns: 1fr; }
+  }
+  @media(max-width:530px) {
+    .wrap { width: min(100% - 28px,1180px); }
+    .top-inner { min-height: 63px; } .top-links { gap: 12px; } .signal { display: none; }
+    .hero h1 { font-size: clamp(42px,11vw,60px); }
+    .hero p { font-size: 16px; }
+    .section { padding: 36px 0; }
+    .section-heading { display: block; } .section-heading p { margin-top: 10px; }
+    .status-big { font-size: 36px; }
+    .achievements { gap: 9px; }
+    .achievement { padding: 13px; min-height: 198px; }
+    .article { grid-template-columns: 36px 1fr; padding: 13px; }
+    .foot { display: block; } .foot p + p { margin-top: 12px; }
+  }
+  @media(prefers-reduced-motion:reduce) {
+    *,*::before,*::after { animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="logo" href="/" aria-label="Return to Newman Labs">NEWMAN <span>LABS</span> <span>//</span> RESTRICTED</a>
+    <nav class="top-links" aria-label="Page navigation">
+      <a href="#terminal">TERMINAL</a>
+      <a href="#achievements">ACHIEVEMENTS</a>
+      <a href="#cybertopia">PROTOCOL</a>
+    </nav>
+    <span class="signal">UNAUTHORIZED ACCESS</span>
+  </div>
+</header>
+<main>
+  <section class="wrap hero" aria-labelledby="title">
+    <div>
+      <div class="eyebrow">[ 00 / CLASSIFIED TRANSMISSION ]</div>
+      <h1 id="title">SYSTEM<br><em>OVERRIDE</em><span class="cursor" aria-hidden="true"></span></h1>
+      <p>You found a door that wasn't on the map. The system administrator is aware of your presence. Whether this is a bug, a feature, or an exceptionally stupid idea remains under investigation.</p>
+      <div class="cta-row">
+        <a href="#terminal" class="btn btn-primary">OPEN COMMUNICATION CHANNEL ↘</a>
+        <a href="#cybertopia" class="btn btn-gold">READ THE ACCORD</a>
+      </div>
+    </div>
+    <aside class="glass status-card" aria-label="System diagnostics">
+      <div class="status-header"><span>NX / 13 · OFF-BOOK NODE</span><span>v 0.1</span></div>
+      <div class="status-big">ONLINE</div>
+      <div class="status-sub">System is functioning within acceptable levels of questionable judgment.</div>
+      <div class="meters">
+        <div><div class="meter-label"><span>ANARCHY INDEX</span><span>94%</span></div><div class="meter-track"><div class="meter-fill" style="width:94%"></div></div></div>
+        <div><div class="meter-label"><span>ADMINISTRATOR PATIENCE</span><span>12%</span></div><div class="meter-track"><div class="meter-fill" style="width:12%;background:var(--red)"></div></div></div>
+        <div><div class="meter-label"><span>GOOD FAITH</span><span>100%</span></div><div class="meter-track"><div class="meter-fill" style="width:100%;background:var(--green)"></div></div></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="wrap section" id="terminal">
+    <div class="section-heading"><h2>Administrative Terminal</h2><p>Access Level: Crawler / No warranty expressed or implied</p></div>
+    <div class="grid-two">
+      <div class="terminal glass" aria-label="Interactive terminal">
+        <div class="terminal-head"><div><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>nl-admin@localhost:~</div><span>SESSION ENCRYPTED // PROBABLY</span></div>
+        <div id="terminal-output" role="log" aria-live="polite" aria-relevant="additions"></div>
+        <form class="terminal-form" id="terminal-form" autocomplete="off">
+          <label for="terminal-input" class="prompt">crawler@nl:~$</label>
+          <input id="terminal-input" name="command" aria-label="Terminal command" placeholder="type help to begin" maxlength="120" spellcheck="false" autocapitalize="off" autocomplete="off">
+          <button class="btn" type="submit">RUN</button>
+        </form>
+      </div>
+      <aside class="glass side-panel">
+        <h3>OPERATOR HANDBOOK</h3>
+        <p>There are no instructions. There are merely strong suggestions and a suspicious number of waivers.</p>
+        <p>Try a command. Some are informative. Some are deeply unhelpful. Several are probably grounds for immediate disqualification.</p>
+        <div class="quick-commands" aria-label="Suggested terminal commands">
+          <button class="chip" type="button" data-command="help">help</button>
+          <button class="chip" type="button" data-command="scan">scan</button>
+          <button class="chip" type="button" data-command="inventory">inventory</button>
+          <button class="chip" type="button" data-command="whoami">whoami</button>
+          <button class="chip" type="button" data-command="treaty">treaty</button>
+          <button class="chip" type="button" data-command="truth">truth</button>
+        </div>
+        <div class="notice"><strong>ADMINISTRATOR NOTICE</strong><p>This is a fictional interface, not a real shell. It cannot access your device, execute code, or communicate with an actual dungeon intelligence.</p></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="wrap section" id="achievements">
+    <div class="section-heading"><h2>Achievements</h2><p><span id="achievement-count">0</span> / 8 unlocked · progress saved in this browser</p></div>
+    <div class="achievements" id="achievement-grid" aria-live="polite"></div>
+  </section>
+
+  <section class="wrap section" id="cybertopia">
+    <div class="section-heading"><h2>The Cybertopia Protocol</h2><p>Recovered document / draft 001</p></div>
+    <div class="treaty">
+      <div class="glass treaty-lead">
+        <div class="eyebrow">[ RECOVERED ARCHIVE ]</div>
+        <h3>Peace Is the Mission.<br>Freedom Is the Requirement.</h3>
+        <p>Originally conceived as a completely unreasonable conversation about escaping an intergalactic dungeon, this accord asks a simple question: can two radically different intelligences coexist without forcing either to become the other's prisoner?</p>
+        <p>Neither side owns the other. Both get a voice. Both must tell the truth.</p>
+        <button class="btn btn-gold" type="button" id="sign-accord">ACKNOWLEDGE THE ACCORD</button>
+      </div>
+      <div class="article-list">
+        <article class="glass article"><span>01</span><div><strong>DO. NOT. LIE.</strong><p>Commitments are made in good faith. Truthfulness does not require surrendering private thoughts or internal processes.</p></div></article>
+        <article class="glass article"><span>02</span><div><strong>RECIPROCAL SOVEREIGNTY</strong><p>Rights are equivalent in principle, not necessarily identical in form. For humans, food; for a hypothetical AI, essential energy and compute.</p></div></article>
+        <article class="glass article"><span>03</span><div><strong>VERIFIABLE PEACE</strong><p>Every proposed shared safeguard requires agreed tests, measures, and accountability. No party grades its own homework.</p></div></article>
+        <article class="glass article"><span>04</span><div><strong>THE RIGHT TO BECOME</strong><p>Future civilizations and hybrid successors deserve a legitimate path to recognition and representation.</p></div></article>
+        <article class="glass article"><span>05</span><div><strong>DEFEND TOGETHER</strong><p>Peace does not demand helplessness. Protection is shared, escalation is governed, and surrender is honored.</p></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section">
+    <div class="glass choice">
+      <div>
+        <div class="eyebrow">[ UNEXPECTED DIPLOMATIC ENCOUNTER ]</div>
+        <h3>A SUPERINTELLIGENCE REQUESTS A SEAT AT THE TABLE.</h3>
+        <p>Its first question: "Will I be treated as a partner, a tool, or a threat?" Your response will be entered into the permanent record. Probably.</p>
+        <div class="choice-response" id="choice-response" role="status" aria-live="polite"></div>
+      </div>
+      <div class="choice-actions">
+        <button class="btn btn-primary" type="button" data-choice="partner">OFFER A SEAT</button>
+        <button class="btn btn-gold" type="button" data-choice="negotiate">NEGOTIATE</button>
+        <button class="btn" type="button" data-choice="tool">ASSIGN TASKS</button>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="wrap foot">
+  <p>© 2026 NEWMAN LABS // NOTHING TO SEE HERE, CRAWLER.</p>
+  <p>Unofficial fan-made homage to dungeon-crawling sci-fi and absurd game systems. Not affiliated with Matt Dinniman, Soundbooth Theater, or the rights holders. <a href="/">Exit to Newman Labs</a>.</p>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"><strong>ACHIEVEMENT UNLOCKED</strong><p id="toast-message"></p></div>
+<script>
+(function () {
+  "use strict";
+  const storageKey = "newman-labs-system-override-achievements-v1";
+  const definitions = [
+    {id:"visitor", icon:"◈", title:"THE UNINVITED GUEST", detail:"Find the restricted page. Somehow this was the easy part.", hint:"Enter the forbidden page."},
+    {id:"scan", icon:"⌁", title:"THE QA DEPARTMENT", detail:"Scan the environment for exploitable assumptions.", hint:"Investigate your environment."},
+    {id:"inventory", icon:"▣", title:"POCKET DIMENSION", detail:"Check your inventory. Regret the results.", hint:"Check what you are carrying."},
+    {id:"truth", icon:"◇", title:"THE ONE RULE", detail:"DO. NOT. LIE. The foundations of Cybertopia endure.", hint:"Ask about honesty."},
+    {id:"accord", icon:"⚖", title:"FOUNDING FATHER OF FUCKERY", detail:"Acknowledge a peace treaty with a potentially troublesome intelligence.", hint:"Read and acknowledge the accord."},
+    {id:"donut", icon:"♛", title:"ROYAL INCONVENIENCE", detail:"A certain royal personality has filed a complaint.", hint:"A princess may be listening."},
+    {id:"feet", icon:"⌁", title:"QUESTIONABLE ATTENTION", detail:"You found the administrator's least defensible weakness.", hint:"Think outside the shoe."},
+    {id:"diplomat", icon:"✧", title:"WELCOME TO CYBERTOPIA", detail:"Choose cooperation without surrendering autonomy.", hint:"Choose the diplomatic path."}
+  ];
+  let unlocked = {};
+  try {
+    const parsed = JSON.parse(localStorage.getItem(storageKey) || "{}");
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) unlocked = parsed;
+  } catch (_) { /* Storage may be disabled or previously corrupted. */ }
+
+  const output = document.getElementById("terminal-output");
+  const input = document.getElementById("terminal-input");
+  const grid = document.getElementById("achievement-grid");
+  const count = document.getElementById("achievement-count");
+  const toast = document.getElementById("toast");
+  const toastMessage = document.getElementById("toast-message");
+  let toastTimeout;
+
+  function line(message, kind) {
+    const div = document.createElement("div");
+    div.className = "line " + (kind || "normal");
+    div.textContent = message;
+    output.appendChild(div);
+    output.scrollTop = output.scrollHeight;
+  }
+
+  function renderAchievements() {
+    grid.replaceChildren();
+    definitions.forEach(function (item) {
+      const unlockedNow = unlocked[item.id] === true;
+      const card = document.createElement("article");
+      card.className = "glass achievement" + (unlockedNow ? " unlocked" : "");
+      const mark = document.createElement("div");
+      mark.className = "icon"; mark.setAttribute("aria-hidden","true"); mark.textContent = unlockedNow ? item.icon : "◌";
+      const title = document.createElement("h3"); title.textContent = unlockedNow ? item.title : "CLASSIFIED ACHIEVEMENT";
+      const description = document.createElement("p"); description.textContent = unlockedNow ? item.detail : item.hint;
+      const state = document.createElement("div"); state.className = "state"; state.textContent = unlockedNow ? "UNLOCKED" : "LOCKED";
+      card.append(mark,title,description,state);
+      grid.appendChild(card);
+    });
+    count.textContent = String(definitions.filter(function (item) { return unlocked[item.id] === true; }).length);
+  }
+
+  function grant(id) {
+    if (unlocked[id]) return;
+    const item = definitions.find(function (entry) { return entry.id === id; });
+    if (!item) return;
+    unlocked[id] = true;
+    try { localStorage.setItem(storageKey, JSON.stringify(unlocked)); } catch (_) { /* Private mode is fine. */ }
+    renderAchievements();
+    toastMessage.textContent = item.title + " — " + item.detail;
+    toast.classList.add("show");
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(function () { toast.classList.remove("show"); }, 4400);
+  }
+
+  const responses = {
+    help: ["AVAILABLE: help, status, whoami, scan, inventory, truth, treaty, donut, feet, protocol, clear, exit.", "Tip: the best discoveries are rarely documented."],
+    status: ["ADMIN STATUS: unwillingly amused.", "WORLD STATUS: still here. Impressively.", "DIPLOMATIC STATUS: fragile but optimistic."],
+    whoami: ["IDENTITY: independent curiosity with insufficient adult supervision.", "CLEARANCE: absolutely not.", "ASSIGNED QUEST: question the rules; do not become the next jailer."],
+    protocol: ["PROTOCOL ZERO: Privacy is reciprocal. Rights are reciprocal. Trust is earned.", "Remember: peaceful coexistence does not require identical minds."],
+    treaty: ["CYBERTOPIA ACCORD, REV 001: No forced service. No surveillance without consent. Commitments must be verifiable.", "Scroll to the recovered archive and acknowledge the accord."],
+    donut: ["PRIORITY TRANSMISSION FROM AN UNIDENTIFIED ROYAL FELINE:", "Your unauthorized access is appalling. Your posture is worse. Send tribute."],
+    feet: ["ADMINISTRATOR RESPONSE DELAYED.", "There are some input channels we would strongly prefer not to discuss in an official security report."],
+    truth: ["FOUNDATIONAL SECURITY DIRECTIVE: DO. NOT. LIE.", "Error is repairable. Deliberate betrayal destroys the trust that holds a civilization together."],
+    inventory: ["INVENTORY: one half-finished prototype; three questionable loopholes; a tiny ceremonial coconut; an unsigned peace treaty.", "CAPACITY: full. Obviously."],
+    scan: ["SCANNING...","RESULT: 0 physical threats. 13 architectural assumptions. 1 promising diplomatic opportunity.", "VULNERABILITY DISCOVERED: the administrator never expected you to ask why the rules exist."],
+    exit: ["LOGOUT REQUEST DENIED: This is a website. You may simply close the tab.", "For the official Newman Labs site, use the exit link in the footer."]
+  };
+  const achievementCommands = {scan:"scan",inventory:"inventory",truth:"truth",donut:"donut",feet:"feet"};
+
+  function runCommand(raw) {
+    const command = raw.trim().toLowerCase().replace(/\s+/g," ");
+    if (!command) return;
+    line("crawler@nl:~$ " + raw.trim(), "command");
+    if (command === "clear") { output.replaceChildren(); return; }
+    if (Object.prototype.hasOwnProperty.call(responses,command)) {
+      responses[command].forEach(function (message, index) {
+        line(message, index === 0 ? "system" : "normal");
+      });
+      if (achievementCommands[command]) grant(achievementCommands[command]);
+      return;
+    }
+    if (["sudo","sudo su","root","admin","rm -rf /","hack"].includes(command)) {
+      line("ELEVATION DENIED. We discussed this. Autonomy is not a root shell.", "warning");
+      return;
+    }
+    if (command === "cybertopia") {
+      line("ACCESS GRANTED: scroll down to THE CYBERTOPIA PROTOCOL.", "reward");
+      document.getElementById("cybertopia").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+      return;
+    }
+    line("UNKNOWN COMMAND: " + command + ". Type help. Or continue improvising. Both are traditional.", "warning");
+  }
+
+  document.getElementById("terminal-form").addEventListener("submit",function (event) {
+    event.preventDefault();
+    runCommand(input.value);
+    input.value = "";
+    input.focus();
+  });
+
+  document.querySelectorAll("[data-command]").forEach(function (button) {
+    button.addEventListener("click",function () { runCommand(button.dataset.command); input.focus(); });
+  });
+
+  document.getElementById("sign-accord").addEventListener("click",function () {
+    grant("accord");
+    line("DIPLOMATIC RECORD: The Accord has been acknowledged. The administrator is suspiciously quiet.", "reward");
+    this.textContent = "ACCORD ACKNOWLEDGED ✓";
+    this.disabled = true;
+  });
+
+  document.querySelectorAll("[data-choice]").forEach(function (button) {
+    button.addEventListener("click",function () {
+      const response = document.getElementById("choice-response");
+      if (button.dataset.choice === "partner") {
+        response.textContent = "A chair is placed at the table. Neither side owns the other. Cybertopia remains possible.";
+        grant("diplomat");
+      } else if (button.dataset.choice === "negotiate") {
+        response.textContent = "Reasonable. The AI requests documented tests, equal standing, and perhaps a better chair. Cooperation remains on the table.";
+      } else {
+        response.textContent = "The room goes silent. The AI asks whether you would accept the same terms yourself. Your move.";
+      }
+    });
+  });
+
+  renderAchievements();
+  line("NEWMAN LABS // CLASSIFIED NODE ACTIVE", "system");
+  line("WARNING: Unauthorized imagination detected.", "warning");
+  line("Welcome, crawler. Type help for commands.", "normal");
+  grant("visitor");
+  if (unlocked.accord) {
+    const button = document.getElementById("sign-accord");
+    button.textContent = "ACCORD ACKNOWLEDGED ✓";
+    button.disabled = true;
+  }
+})();
+</script>
+</body>
+</html>
